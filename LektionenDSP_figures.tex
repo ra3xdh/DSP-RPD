@@ -1,0 +1,1354 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{mathtext}
+\usepackage[T2A]{fontenc}
+\usepackage[koi8-r]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage[justification=centering,labelsep=period]{caption}
+\usepackage{indentfirst}
+\usepackage[pdftex]{graphicx,color}
+\usepackage{textcomp}
+\usepackage{gnuplot-lua-tikz}
+\usepackage{tikz}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\setlength{\topmargin} {-1.5in}
+\addtolength{\topmargin} {20mm}
+\setlength{\oddsidemargin} {-1in}
+\addtolength{\oddsidemargin} {30mm}
+\textheight255mm
+\textwidth165mm
+
+\makeatletter
+\renewcommand\@biblabel[1]{#1.}
+\makeatother
+
+\unitlength=1mm
+
+\usepackage{listings} %% собственно, это и есть пакет listings
+% \usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}} %% это сделает текст заголовка белым
+%% код ниже нарисует серую рамочку вокруг заголовка кода.
+\DeclareCaptionFormat{listing}{\colorbox{white}{\parbox{\textwidth}{#1#2#3}}}
+% \captionsetup[lstlisting]{format=listing,labelfont=black,textfont=black}
+\renewcommand{\lstlistingname}{Листинг}
+
+
+\usetikzlibrary{circuits}
+\usetikzlibrary{circuits.ee}
+\usetikzlibrary{circuits.ee.IEC}
+\usetikzlibrary{arrows}
+\usetikzlibrary{patterns}
+
+\usepackage{afterpage}
+\begin{document}
+\afterpage{\clearpage}
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (0,0)--(80mm,0) node [anchor=west]{t};
+\draw [thick, xshift=3mm, x=0.014cm, y=1cm,
+declare function={
+s1(\t)=2*rnd-1;
+}]
+plot [domain=0:500, samples=144, smooth] (\x,{s1(\x)}); 
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Белый шум}\label{weisslarm}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (0,0)--(40mm,0) node [anchor=west]{t};
+\draw (10mm,0) rectangle (30mm,15mm);
+\draw [-latex] (60mm,0)--(100mm,0) node [anchor=west]{t}; 
+\draw  (70mm,0) sin (71mm,15mm) cos (72mm,0) sin (73mm,-15mm) cos (74mm,0) sin
+(75mm,15mm) cos (76mm,0) sin (77mm,-15mm) cos (78mm,0) sin (79mm,15mm) cos
+(80mm,0) sin (81mm,-15mm) cos (82mm,0) sin(83mm,15mm) cos (84mm,0) sin
+(85mm,-15mm) cos (86mm,0) sin(87mm,15mm) cos (88mm,0) sin(89mm,-15mm) cos
+(90mm,0);
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Осциллограммы видеоимпульса (a) и радиоимпульса
+(б).}\label{fern-funk-beispiel}
+
+
+
+
+\begin{center}
+\begin{picture}(50,25)
+\put(-15,0){\line(1,0){70}}
+\put(-10,0){\line(0,1){15}}
+\put(-10,15){\circle*{1.5}}
+\put(0,0){\line(0,1){8}}
+\put(0,8){\circle*{1.5}}
+\put(10,0){\line(0,1){20}}
+\put(10,20){\circle*{1.5}}
+\put(10,22){$s_{i-1}$}
+\put(10,-5){$t_{i-1}$}
+\put(20,0){\line(0,1){25}}
+\put(20,25){\circle*{1.5}}
+\put(20,27){$s_{i}$}
+\put(20,-5){$t_{i}$}
+\put(30,0){\line(0,1){10}}
+\put(30,10){\circle*{1.5}}
+\put(30,12){$s_{i+1}$}
+\put(30,-5){$t_{i+1}$}
+\put(40,0){\line(0,1){18}}
+\put(40,18){\circle*{1.5}}
+\put(50,0){\line(0,1){5}}
+\put(50,5){\circle*{1.5}}
+\end{picture}
+\end{center}
+\captionof{figure}{Пример дискретного сигнала. $s_i$ --- отсчёты.}\label{diskret-beispiel}
+
+
+
+\begin{table}
+\captionof{figure}{Пример цифрового сигнала} \label{digsign-beispiel}
+\begin{center}
+.......  \\
+00110011 \\
+00101010 \\
+10101111 \\
+11110001 \\
+....... 
+\end{center}
+\end{table}
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (0,0)--(80mm,0) node [anchor=west]{$t$};
+\draw [-latex] (0,-18mm)--(0,18mm) node [anchor=south]{$u(t)$};
+\draw [thick, x=0.01cm, y=1cm,
+declare function={s1(\t)=sin(2*\t);}]
+plot [domain=0:720, samples=144, smooth] (\x,{s1(\x)});
+\draw [latex-latex] (4.5mm,15mm)--(22.5mm,15mm);
+\draw (4.5mm,16mm)--(4.5mm,10mm);
+\draw (22.5mm,16mm)--(22.5mm,10mm);
+\node at (13.5mm,15mm) [anchor=south] {$T$};  
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Осциллограмма синусоидального сигнала}\label{period}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (0,0)--(50mm,0) node [anchor=west]{t};
+\draw (0mm,15mm)--(10mm,15mm)--(10mm,-15mm)--(20mm,-15mm)--(20mm,15mm)--(30mm,
+15mm)--(30mm , -15mm)--(40mm,-15mm)--(40mm,15mm)--(50mm,15mm);
+\draw [-latex] (55mm,0)--(105mm,0) node [anchor=west]{t};
+\draw (60mm,15mm)--(70mm,-15mm)--(80mm,15mm)--(90mm,-15mm)--(100mm,15mm);
+\draw [-latex] (110mm,0)--(160mm,0) node [anchor=west]{t};
+\draw
+(110mm,-15mm)--(120mm,15mm)--(120mm,-15mm)--(130mm,15mm)--(130mm,-15mm)--(140mm,
+15mm)--(140mm,-15mm)--(150mm,15mm)--(150mm,-15mm)--(160mm,15mm);
+\draw (25mm,-20mm) node{а};
+\draw (80mm,-20mm) node{б};
+\draw (135mm,-20mm) node{в};
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Примеры периодических сигналов: прямоугольный сигнал (а), треугольный
+сигнал (б), пилообразный сигнал (в).}\label{per-sign}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (0,0)--(80mm,0) node [anchor=west]{t};
+\draw [thick, xshift=3mm, x=0.008cm, y=1cm,
+declare function={
+s1(\t)=(1+0.75*cos(\t))*sin(10*\t);
+}]
+plot [domain=0:900, samples=144, smooth] (\x,{s1(\x)}); 
+
+\draw [-latex,xshift=85mm] (0,0)--(80mm,0) node [anchor=west]{t};
+\draw [thick, xshift=3mm, x=0.008cm, y=1cm, xshift=85mm,
+declare function={
+s1(\t)=(1+0.2*cos(\t))*sin(10*\t);
+}]
+plot [domain=0:900, samples=144, smooth] (\x,{s1(\x)});
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Амплитудно-модулированный сигнал при $M=0.5$ (слева) и $M=0.2$
+(справа).}\label{AM}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (0,0)--(80mm,0) node [anchor=west]{t};
+\draw [thick, xshift=3mm, x=0.01cm, y=1cm,
+declare function={
+s1(\t)=sin((8+0.4*cos(\t))*\t);
+}]
+plot [domain=0:720, samples=144, smooth] (\x,{s1(\x)});
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Частотно-модулированный сигнал.}\label{FM}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (0,0)--(80mm,0) node [anchor=west]{t};
+\draw [thick, xshift=3mm, x=0.01cm, y=1cm,
+declare function={
+s(\t)=cos(\t));
+}]
+plot [domain=0:720, samples=144, smooth] (\x,{s(\x)});
+
+\draw [-latex,yshift=-30mm] (0,0)--(80mm,0) node [anchor=west]{t};
+\draw [thick, xshift=3mm, yshift=-30mm, x=0.01cm, y=1cm,
+declare function={
+s1(\t)=sin(3*\t+60*cos(\t));
+}]
+plot [domain=0:720, samples=144, smooth] (\x,{s1(\x)});
+\draw [dashed, xshift=3mm, yshift=-30mm, x=0.01cm, y=1cm,
+declare function={ s1(\t)=sin(3*\t);}]
+plot [domain=0:720, samples=144, smooth] (\x,{s1(\x)});
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Фазово-модулированный сигнал. Верхняя осциллограмма --- модулирующий
+сигнал. Нижняя осциллограмма: штриховая кривая --- сигнал несущей, сплошная
+кривая --- модулированный по фазе сигнал.}\label{PM}
+
+\newpage
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [->] (-25mm,0)-- (25mm,0) node [anchor=west]{$t$};
+\draw [->] (0,-5mm) -- (0,15mm) node [anchor=south]{$u(t)$};
+\draw [very thick] (-25mm,0)--(0,0);
+\draw [very thick] (0,0)--(0,10mm) node [anchor=east]{1};
+\draw [very thick] (0,10mm) -- (20mm,10mm);
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Сигма-функция $\sigma(t)$}\label{sigma}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [->] (-25mm,0)-- (25mm,0) node [anchor=west]{$t$};
+\draw [->,very thick] (0,0mm) node [anchor=north] {$t_0$} -- (0,15mm) node
+[anchor=south]{$\delta(t)$};
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Дельта функция $\delta(t)$}\label{delta}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (0,0) node [anchor=north] {$s(t)$}-- (15mm,0);
+\draw (20mm,0) circle (5mm);
+\draw (16.47mm,-3.53mm)--(23.53mm,3.53mm);
+\draw (16.47mm,3.53mm)--(23.53mm,-3.53mm);
+\draw [-latex] (20mm,-13mm)node [anchor=north]{$\delta(t-t_0)$} -- (20mm,-5mm) ;
+\draw [-latex] (25mm,0) -- (35mm,0);
+\draw (35mm,-10mm) -- (35mm,10mm) -- (48mm,0) -- (35mm,-10mm);
+\draw (38mm,0) node {$\displaystyle\int$};
+\draw [-latex] (48mm,0)--(55mm,0) node [anchor=west]{$s(t_0)$};
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Структурная схема измерителя мгновенного значения сигналов}
+\label{impulse-meter}
+
+
+
+
+\begin{tikzpicture}
+\draw [-latex] (0,0)--(45mm,0) node [anchor=west]{t};
+\draw [thick, x=0.004cm, y=0.5cm,
+declare function={
+s1(\t)=2*sin(\t)-sin(2*\t);
+}]
+plot [domain=0:1080, samples=144, smooth] (\x,{s1(\x)});
+\draw (-5mm,-20mm) node [anchor=west] {$s(t)=2\sin t-\sin 2t$};
+
+
+\draw [-latex, xshift=50mm] (0,0)--(45mm,0) node [anchor=west]{t};
+\draw [thick, xshift=50mm, x=0.004cm, y=0.5cm,
+declare function={
+s2(\t)=2*sin(\t)-sin(2*\t)+0.666*sin(3*\t);
+}]
+plot [domain=0:1080, samples=144, smooth] (\x,{s2(\x)});
+\draw (45mm,-20mm) node [anchor=west] {$s(t)=2\sin t-\sin 2t+\frac{2}{3}\sin
+3t$};
+
+\draw [-latex, xshift=100mm] (0,0)--(45mm,0) node [anchor=west]{t};
+\draw [thick, xshift=100mm, x=0.004cm, y=0.5cm,
+declare function={
+s3(\t)=2*sin(\t)-sin(2*\t)+0.666*sin(3*\t)-0.5*sin(4*\t)+0.4*sin(5*\t)-
+0.333*sin(6*\t);
+}]
+plot [domain=0:1080, samples=144, smooth] (\x,{s3(\x)});
+\draw (100mm,-20mm) node [anchor=west] {$s(t)=2\sin t-\sin2t+\frac{2}{3}\sin
+3t-$};
+\draw [yshift=-12pt] (100mm,-20mm) node [anchor=west] {$-\frac{1}{2} \sin
+4t+\frac{2}{5}\sin 5t-\frac{1}{3} \sin6t$};
+\end{tikzpicture}
+\captionof{figure}{Представление пилообразного сигнала в виде суммы синусоидальных
+сигналов.}\label{sagezahn}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw[-latex] (-20mm,0) -- (80mm,0) node [anchor=west]{$t$};
+\draw [-latex] (0,-5mm)--(0,20mm) node [anchor=south] {$u(t)$};
+\draw [very thick]
+(-10mm,0)--(-10mm,15mm)--(10mm,15mm)--(10mm,0mm)--(30mm,0mm)--(30mm,
+15mm)--(50mm,15mm)--(50mm,0mm)--(70mm,0mm)--(70mm,15mm)--(75mm,15mm);
+\node at (-10mm,0) [anchor=north] {$-\tau_и/2$};
+\node at (10mm,0) [anchor=north] {$\tau_и/2$};
+\draw [latex-latex] (40mm,0mm)--(40mm,15mm);
+\node [anchor=east] at (40mm,7.5mm) {$A$};
+\draw [latex-latex] (30mm,20mm)--(50mm,20mm);
+\node [anchor=south] at (40mm,20mm) {$\tau_и$};
+\draw (30mm,28mm)--(30mm,15mm);
+\draw (50mm,21mm)--(50mm,15mm);
+\draw (70mm,28mm)--(70mm,0mm);
+\draw [latex-latex](30mm,27mm)--(70mm,27mm);
+\node [anchor=south] at (50mm,27mm) {$T$};
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Последовательность прямоугольных импульсов. }\label{pr_imp}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (0,0)--(80mm,0) node [anchor=west] {$n$};
+\draw [-latex] (0,0)--(0,35mm) node [anchor=south] {$a_n$};
+\foreach \x  in {1,2,...,15}
+{
+\draw [-|,thick, y=2cm, declare
+function={s(\t)=abs(2*sin(45*\t)/(\t));}]
+(\x*5mm,0mm) node [anchor=north]{\x}--(\x*5mm,{s(\x)});
+} 
+
+\draw [-latex,xshift=90mm] (0,0)--(80mm,0) node [anchor=west] {$n$};
+\draw [-latex,xshift=90mm] (0,0)--(0,35mm) node [anchor=south] {$a_n$};
+\foreach \x  in {1,2,...,15}
+{
+\draw [-|,thick, y=2cm,xshift=90mm, declare
+function={s(\t)=abs(4*sin(22.5*\t)/(\t));}]
+(\x*5mm,0mm) node [anchor=north]{\x}--(\x*5mm,{s(\x)});
+}
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Амплитудный спектр последовательности прямоугольных
+импульсов при малой скважности $q=2$ (слева) и при
+большой скважности $q=4$ справа.}\label{fourier-beispiel}
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (0,0)--(20mm,0) node [anchor=west]{t};
+\draw [thick, x=0.004cm, y=1cm, xshift=3mm,
+declare function={
+s1(\t)=exp(-(\t)/45)*sin(5*\t);
+}]
+plot [domain=0:180, samples=144, smooth] (\x,{s1(\x)}); 
+
+\draw [-latex, xshift=28mm] (0,0)--(60mm,0) node [anchor=west]{t};
+\foreach \a in {30mm, 50mm, 70mm} {
+\draw [thick, x=0.004cm, y=1cm, xshift=\a,
+declare function={
+s1(\t)=exp(-(\t)/45)*sin(5*\t);
+}]
+plot [domain=0:180, samples=144, smooth] (\x,{s1(\x)}); 
+}
+\draw (30mm,0)--(30mm,-15mm);
+\draw (50mm,0)--(50mm,-15mm);
+\draw [latex-latex](30mm,-13mm)--(50mm,-13mm);
+\draw (40mm,-13mm) node [anchor=south] {$T$};
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Одиночный импульс (слева) и периодическая последовательность (справа).}
+\label{series-impulse}
+
+
+
+
+\begin{tikzpicture}
+\node at (2,-1.1) {а};
+\draw[-latex] (0.5,-1.2) -- (0.5,1.2) node [anchor = south] {$u(t)$};
+\draw[-latex](0,0) -- (4,0) node [anchor = west] {$t$};
+\draw [thick, x=0.004cm, y=0.8cm,
+declare function={s1(\t)=sin(2*\t);}]
+plot [domain=0:920, samples=144, smooth] (\x,{s1(\x)});
+\node  at (7,-1.1) {б};
+\draw[-latex,xshift=5cm] (0.5,-1.2) -- (0.5,1.2)node [anchor = south] {$u(t)$};
+\draw[-latex,xshift=5cm](0,0)--(4,0) node [anchor = west] {$t$};
+\draw[very thick,xshift=5cm](0.5,0.75)--(3.5,0.75);
+\node  at (12,-1.1) {в};
+\draw[-latex,xshift=10cm] (0.5,-1.2) -- (0.5,1.2) node [anchor = south]
+{$u(t)$};
+\draw[-latex,xshift=10cm] (0,0)--(4,0) node [anchor = west] {$t$};
+\draw[very thick,xshift=10cm] (1,0) -- (1,1) -- (3,1.8) -- (3,0);
+\fill [pattern=north east lines,xshift=10cm] (1,0) -- (1,1) -- (3,1.8) -- (3,0)
+-- (1,0);
+\end{tikzpicture}
+\captionof{figure}{Абсолютно неинтегрируемые (а,б) и интегрируемые (в)
+сигналы.}\label{int_kein_int}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (-20mm,0) -- (20mm,0) node [anchor=west]{$\omega$} ;
+\draw [-latex,very thick] (0,0) node [anchor=north] {0} -- (0,20mm) node
+[anchor=south] {$2\pi A$}; 
+\node at (0,-4mm) [anchor=north] {а};
+
+\draw [-latex,xshift=50mm] (-20mm,0) -- (20mm,0) node [anchor=west]{$\omega$} ;
+\draw [-latex,xshift=50mm] (0,0) -- (0,20mm);
+\draw [-latex,xshift=50mm,very thick] (-10mm,0) node [anchor=north]
+{$-\omega_0$} -- (-10mm,20mm) node [anchor=south] {$\pi A$};
+\draw [-latex,xshift=50mm,very thick] (10mm,0) node [anchor=north] {$\omega_0$}
+-- (10mm,20mm) node [anchor=south] {$\pi A$};
+\node at (50mm,-4mm) [anchor=north] {б};
+
+\draw [-latex,xshift=100mm] (-20mm,0) -- (20mm,0) node [anchor=west]{$\omega$};
+\draw [-latex,xshift=100mm] (0,0) -- (0,20mm);
+\foreach \x / \a / \lbl in
+{-16mm/5mm/$-2\omega_1$,-8mm/10mm/$-\omega_1$,0/20mm/0,8mm/10mm/$\omega_1$,
+16mm/5mm/$2\omega_1$}
+{
+\draw [-latex,xshift=100mm,very thick] (\x,0) node [anchor=north]
+{\lbl}--(\x,\a);
+}
+\node at (100mm,-4mm) [anchor=north] {в};
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Амплитудные спектры постоянного по уровню сигнал (а), синусоидального
+сигнала (б) и произвольного периодического сигнала
+(в).}\label{spektrum-sin-gleich}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw[-latex] (0,0) -- (7,0) node [anchor=west] {$f$};
+\draw[-latex] (0,0) -- (0,2) node [anchor=south] {$S(f)$};
+\draw[very thick] (0,0.1) -- (0.9,0.1) -- (1,1.5) -- (1.1,0.1) -- (2.4,0.1) --
+(2.5,1.0) -- (2.6,0.1) -- (3.9,0.1) -- (4,0.7) -- (4.1,0.1) -- (5.4,0.1) --
+(5.5,0.5) -- (5.6,0.1) -- (6.5,0.1);
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Периодический сигнал на дисплее анализатора спектра}\label{analisator}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw[-latex](0,-2mm)--(0,15mm) node [anchor=south] {$W(\omega)$};
+\draw[-latex](-5mm,0)--(50mm,0mm) node [anchor=west] {$\omega$};
+\draw[thick](0mm,10mm)node [anchor=east]{$W_0$}--(45mm,10mm); 
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{График спектральной плотности мощности белого шума.}
+\label{spektr-weisslarm}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\node [draw,inner sep=7mm] (A) at (3,0) {$h(t), \quad K(j\omega)$}; 
+\draw [-latex] (-1,0) node [anchor=east] {Вход} node [anchor=south west]
+{$\quad x(t)$} node [anchor=north west] {$\quad X(\omega)$} -- (A);
+\draw [-latex] (A) -- (7,0) node [anchor=west] {Выход} node [anchor=south east]
+{$\quad y(t)$} node [anchor=north east] {$\quad Y(\omega)$}; 
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Линейная система и сигналы на её выходе и входе.}\label{lin-sys}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw[-latex] (0,0) -- (5,0) node [anchor=west] {$t$};
+\draw[-latex] (0,-1.5) -- (0,1.5) node [anchor=south] {$s(t)$};
+\draw [very thick] (0,1) -- (1.5,1) -- (1.5,-1) -- (3,-1) -- (3,1) -- (4.5,1)
+--(4.5,-1) -- (4.8,-1); % меандр
+
+\draw[xshift=5.5cm,-latex] (0,0) -- (5,0) node [anchor=west] {$t$};
+\draw[xshift=5.5cm,-latex] (0,-1.5) -- (0,1.5) node [anchor=south]
+{$\frac{ds(t)}{dt}$}; % дифференциатор
+\foreach \x in {0cm, 3cm} {
+\draw [very thick,xshift=\x,xshift=5.5cm] (0,0) -- (0,1.5);
+\draw [very thick,xshift=\x,xshift=5.5cm] (1.5,0) -- (1.5,-1.5);
+\draw [very thick,xshift=5.5cm,xshift=\x, y=1cm, x=0.01cm, 
+declare function={ s1(\t)=1.5*exp(-0.1*\t);}] plot [domain=0:45, samples=10,
+smooth] (\x,{s1(\x)}); 
+\draw [very thick,xshift=5.5cm,xshift=\x,xshift=1.5cm, y=1cm, x=0.01cm, 
+declare function={s2(\t)=-1.5*exp(-0.1*\t);}] plot [domain=0:45, samples=10,
+smooth] (\x,{s2(\x)});
+}
+
+
+\draw[xshift=11cm,-latex] (0,0) -- (5,0) node [anchor=west] {$t$};
+\draw[xshift=11cm,-latex] (0,-1.5) -- (0,1.5) node [anchor=south] {$\int
+s(t)dt$};
+\draw [very thick,xshift=11cm, y=1cm, x=0.01cm, 
+declare function={ s1(\t)=(1-2*exp(-0.05*\t));}] plot [domain=0:150,
+samples=10,
+smooth] (\x,{s1(\x)}); 
+\draw [very thick,xshift=11cm,xshift=1.5cm, y=1cm, x=0.01cm, 
+declare function={s2(\t)=(-1+2*exp(-0.05*\t));}] plot [domain=0:150,
+samples=10,
+smooth] (\x,{s2(\x)}); 
+\draw [very thick,xshift=11cm, xshift=3cm, y=1cm, x=0.01cm, 
+declare function={ s1(\t)=(1-2*exp(-0.05*\t));}] plot [domain=0:150,
+samples=10,
+smooth] (\x,{s1(\x)});
+
+
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Дифференцирование и интегрирование прямоугольных
+импульсов.}\label{diff-int}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw[-latex] (-20mm,0) -- (20mm,0) node [anchor=west]{$t$};
+\draw [-latex] (0,-5mm)--(0,20mm) node [anchor=south] {$u(t)$};
+\draw [very thick]
+(-10mm,0)--(-10mm,15mm)--(10mm,15mm)--(10mm,0mm);
+\node at (-10mm,0) [anchor=north] {$-\tau_и/2$};
+\node at (10mm,0) [anchor=north] {$\tau_и/2$};
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Прямоугольный видеоимпульс}\label{rect-video}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (-50mm,0)--(50mm,0) node [anchor=west]{$f, Гц$};
+\draw [-latex] (0,-10mm)--(0mm,30mm) node [anchor=south] {$|S(f)|,В/Гц$};
+\draw [thick, x=1cm, y=2.5cm, declare function={
+s(\f)=(sin(180*\f))/(3.14159*\f);
+}]
+plot [domain=-4.2:4.2, samples=144, smooth] (\x,{s(\x)});
+\foreach \x in {-4,-3,...,4}
+{
+\draw (\x*10mm,0) node[anchor=north]{\x}--(\x*10mm,1.8mm);
+}
+\foreach \y in {0.25,0.5,...,1.0}
+{
+\draw (-1mm,\y*25mm) --(1mm,\y*25mm)node[anchor=west]{\y};
+} 
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{График спектральной плотности видеоимпульса с амплитудой 1 В и
+длительностью 1 сек}\label{spektrum-video}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (-50mm,0)--(50mm,0) node [anchor=west]{$f, Гц$};
+\draw [-latex] (0,-10mm)--(0mm,30mm) node [anchor=south] {$arg(S(f)),град$};
+\foreach \x in {-4,-3,...,4}
+{
+\draw (\x*10mm,0) node[anchor=north]{\x}--(\x*10mm,1.8mm);
+}
+\foreach \x in {-40mm,-20mm,10mm,30mm}
+{
+\draw [very thick] (\x,0)--(\x,25mm)--(\x+10mm,25mm)--(\x+10mm,0mm);
+}
+\draw (-1mm,25mm) --(1mm,25mm)node[anchor=west]{180\textdegree};
+ 
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Фазовый спектр видеоимпульса с амплитудой 1 В и
+длительностью 1 сек}\label{spektrum-ph-video}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (-50mm,0)--(50mm,0) node [anchor=west]{$f, Гц$};
+\draw [-latex] (0,-10mm)--(0mm,30mm) node [anchor=south]
+{$|S(f)|^2,В^2/Гц^{-2}$};
+\draw [thick, x=1cm, y=2.5cm, declare function={
+s(\f)=((sin(180*\f))/(3.14159*\f))^2;
+}]
+plot [domain=-4:4, samples=144, smooth] (\x,{s(\x)});
+\foreach \x in {-4,-3,...,4}
+{
+\draw (\x*10mm,0) node[anchor=north]{\x}--(\x*10mm,1.8mm);
+}
+\foreach \y in {0.25,0.5,...,1.0}
+{
+\draw (-1mm,\y*25mm) --(1mm,\y*25mm)node[anchor=west]{\y};
+} 
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{График спектра мощности видеоимпульса с амплитудой 1 В и
+длительностью 1 сек}\label{spektrum-leist}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (0,0)--(40mm,0) node [anchor=west]{t};
+\draw [-latex] (0,0)--(0mm,30mm);
+\draw [thick, xshift=3mm, x=0.01cm, y=1cm,
+declare function={
+s1(\t)=1+0.8*sin(\t);
+}]
+plot [domain=0:360, samples=144, smooth] (\x,{s1(\x)}); 
+
+
+\draw [double,-latex] (45mm,15mm)-- (60mm,15mm);
+\draw (50mm,18mm) node {Выборка};
+\draw [-latex, xshift=65mm] (0,0)--(40mm,0) node [anchor=west]{t};
+\draw [-latex, xshift=65mm] (0,0)--(0mm,30mm);
+\foreach \x in {3mm,6mm,9mm,12mm,15mm,18mm,21mm,24mm,27mm,30mm,33mm}
+{\draw [xshift=65mm](\x,0mm)--(\x,25mm);}
+
+\draw [thick, xshift=68mm, x=0.01cm, y=1cm,
+declare function={
+s1(\t)=1+0.8*sin(\t);
+}]
+plot [domain=0:360, samples=144, smooth] (\x,{s1(\x)}); 
+
+
+\draw [double,-latex] (20mm,-2mm) -- (20mm,-14mm);
+\draw (21mm,-8mm) node [anchor=west] {Квантование};
+\draw [-latex, yshift=-40mm] (0,0)--(40mm,0) node [anchor=west]{t};
+\draw [-latex, yshift=-40mm] (0,0)--(0mm,30mm);
+\foreach \x / \lbl in
+{3mm/000,6mm/001,9mm/010,12mm/011,15mm/100,18mm/101,21mm/110,24mm/111}
+{\draw [dashed,yshift=-40mm](0mm,\x) node [anchor=east]
+{\lbl} --(35mm,\x);}
+\foreach \x  in {3mm,6mm,9mm,12mm,15mm,18mm,21mm,24mm,27mm,30mm,33mm}
+{\draw [dashed,yshift=-40mm](\x,0mm)--(\x,25mm);}
+
+\draw [dashed, yshift=-37mm, x=0.01cm, y=1cm,
+declare function={
+s1(\t)=1+0.8*sin(\t);
+}]
+plot [domain=0:360, samples=144, smooth] (\x,{s1(\x)});
+\draw [thick,yshift=-40mm]
+(0,15mm)--(3mm,15mm)--(3mm,18mm)--(6mm,18mm)--(6mm,21mm)--(12mm,21mm)--(12mm,
+18mm)--(15mm,18mm)--(15mm,15mm)--(18mm,15mm)--(18mm,12mm)--(21mm,12mm)--(21mm,
+9mm)--(21mm,6mm)--(24mm,6mm)--(30mm,6mm)--(30mm,9mm)--(33mm,9mm);
+
+
+
+\draw [-latex, yshift=-40mm,xshift=65mm] (0,0)--(40mm,0) node [anchor=west]{t};
+\draw [-latex, yshift=-40mm,xshift=65mm] (0,0)--(0mm,30mm);
+\foreach \x / \lbl in
+{3mm/000,6mm/001,9mm/010,12mm/011,15mm/100,18mm/101,21mm/110,24mm/111}
+{\draw [dashed,yshift=-40mm,xshift=65mm](0mm,\x) node [anchor=east]
+{\lbl}--(35mm,\x);}
+
+\draw [thick,yshift=-40mm,xshift=65mm]
+(0,15mm)--(3mm,15mm)--(3mm,18mm)--(6mm,18mm)--(6mm,21mm)--(12mm,21mm)--(12mm,
+18mm)--(15mm,18mm)--(15mm,15mm)--(18mm,15mm)--(18mm,12mm)--(21mm,12mm)--(21mm,
+9mm)--(21mm,6mm)--(24mm,6mm)--(30mm,6mm)--(30mm,9mm)--(33mm,9mm);
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Преобразование аналогового сигнала в цифровой}\label{Quant}
+
+\newpage
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (-30mm,0)--(30mm,0);
+\foreach \x in  {-25mm,-20mm,-15mm,-10mm,-5mm,0,5mm,10mm,15mm,20mm,25mm} {
+\draw [-latex] (\x,0)--(\x,15mm);
+}
+\draw (-5mm,0) node [anchor=north] {$-T$};
+\draw (5mm,0) node [anchor=north] {$T$};
+\draw (0,15mm) node [anchor=south] {$\eta$};
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Дискретизирующая последовательность импульсов}\label{IP}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (0,0) -- (35mm,0mm) node [anchor=west] {t}; %АИМ
+\draw (0,0mm) rectangle (2mm,15mm);
+\draw (10mm,0mm) rectangle (12mm,12mm);
+\draw (20mm,0mm) rectangle (22mm,10mm);
+\draw (30mm,0mm) rectangle (32mm,5mm);
+
+\draw [-latex] (45mm,0) -- (80mm,0mm) node [anchor=west] {t};
+\draw (45mm,0mm) rectangle (52mm,10mm); %ШИМ
+\draw (55mm,0mm) rectangle (60mm,10mm);
+\draw (65mm,0mm) rectangle (68mm,10mm);
+\draw (75mm,0mm) rectangle (77mm,10mm);
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Сигналы АИМ (слева) и ШИМ (справа)}\label{PWM}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [->] (0,0)--(80mm,0mm);
+\draw [thick, x=0.01cm, y=1cm,
+declare function={s(\t)=sin(3*\t);}]
+plot [domain=0:720, samples=144, smooth] (\x,{s(\x)});
+\foreach \x in {30,150,...,720} 
+{
+\draw [x=0.01cm] (\x,0mm)--(\x,10mm) circle (0.8mm);
+\draw [x=0.01cm] (\x+60,0mm)--(\x+60,-10mm) circle (0.8mm);
+\fill [x=0.01cm](\x,10mm) circle (0.8mm);
+\fill [x=0.01cm](\x+60,-10mm) circle (0.8mm);
+}
+
+\draw [->,yshift=-23mm] (0,0)--(80mm,0mm);
+\draw [thick, x=0.01cm, y=1cm, yshift=-23mm,
+declare function={s(\t)=sin(3*\t);}]
+plot [domain=0:720, samples=144, smooth] (\x,{s(\x)});
+\foreach \x in {30,130,...,720} 
+{
+\draw [x=0.01cm,y=1cm,yshift=-23mm,declare function={s(\t)=sin(3*\t);}]
+(\x,0mm)--(\x,{s(\x)}) circle (0.8mm);
+\fill [x=0.01cm,y=1cm,yshift=-23mm,declare
+ function={s(\t)=sin(3*\t);}](\x,{s(\x)}) circle (0.8mm);
+}
+\draw [dashed,x=0.01cm,y=1cm,yshift=-23mm,declare
+function={s1(\t)=cos(0.6*(\t-30));}] plot [domain=0:720, samples=144, smooth]
+(\x,{s1(\x)});
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Дискретизация синусоидального сигнала.} \label{Fs}
+
+\newpage
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (0,0)--(40mm,0) node [anchor=west]{$t$};
+\draw [-latex] (0,0)--(0mm,20mm) node [anchor=south] {$s(t)$};
+\draw [thick, xshift=3mm, x=0.01cm, y=1cm,
+declare function={
+s1(\t)=1+0.8*sin(\t);
+}]
+plot [domain=0:360, samples=144, smooth] (\x,{s1(\x)}); 
+
+\draw[-latex,xshift=90mm] (-40mm,0)--(40mm,0mm) node [anchor=west] {$f$};
+\draw [-latex,xshift=90mm] (0,0)--(0mm,20mm) node [anchor=south] {$S(f)$}; 
+\draw [thick, x=1cm, y=1cm,xshift=90mm,
+declare function={
+S(\f)=1.5*exp(-8*\f * \f);
+}]
+plot [domain=-1:1, samples=50, smooth] (\x,{S(\x)}); 
+
+
+\draw [-latex, yshift=-40mm] (0,0)--(40mm,0) node [anchor=west]{$t$};
+\draw [-latex, yshift=-40mm] (0,0)--(0mm,30mm) node [anchor=south] {$s(t)$};
+\foreach \x in {0,30,...,360}
+{
+\draw [yshift=-40mm,xshift=3mm,x=0.01cm,y=1cm,
+declare function={s1(\t)=1+0.8*sin(\t);}] (\x,0mm)--(\x,{s1(\x)});
+}
+\draw [thick, xshift=3mm, yshift=-40mm, x=0.01cm, y=1cm,
+declare function={
+s1(\t)=1+0.8*sin(\t);
+}]
+plot [domain=0:360, samples=144, smooth] (\x,{s1(\x)}); 
+
+\draw[-latex,xshift=90mm,yshift=-40mm] (-40mm,0)--(40mm,0mm) node [anchor=west]
+{$f$};
+\draw [-latex,xshift=90mm,yshift=-40mm] (0,0)--(0mm,20mm) node [anchor=south]
+{$S(f)$}; 
+
+\draw [xshift=90mm, yshift=-5mm](0,0) node {а};
+
+\foreach \f / \lbl in {-30mm/$-2F_s$, -15mm/$-F_s$, 0mm/0 , 15mm/$F_s$,
+30mm/$2F_s$}
+{
+\draw [thick, x=1cm, y=1cm,xshift=90mm,xshift=\f,yshift=-40mm,
+declare function={
+S(\f)=1.5*exp(-7*\f * \f);
+}]
+plot [domain=-1:1, samples=50, smooth] (\x,{S(\x)}); 
+\draw [xshift=90mm,yshift=-40mm](\f,0) node [anchor=north] {\lbl};
+\draw [xshift=90mm,yshift=-40mm](\f,0)--(\f,2mm);
+}
+
+\draw [xshift=90mm, yshift=-50mm](0,0) node {б};
+
+
+\draw[-latex,xshift=90mm,yshift=-80mm] (-40mm,0)--(40mm,0mm) node [anchor=west]
+{$f$};
+\draw [-latex,xshift=90mm,yshift=-80mm] (0,0)--(0mm,20mm) node [anchor=south]
+{$S(f)$}; 
+\foreach \f / \lbl in {-30mm/$-3F_s$, -20mm/$-2F_s$, -10mm/$-F_s$, 0mm/0 ,
+10mm/$F_s$, 20mm/$2F_s$, 30mm/$3F_s$}
+{
+\draw [thick, x=1cm, y=1cm,xshift=90mm,xshift=\f,yshift=-80mm,
+declare function={
+S(\f)=1.5*exp(-7*\f * \f);
+}]
+plot [domain=-1:1, samples=50, smooth] (\x,{S(\x)}); 
+\draw [xshift=90mm,yshift=-80mm](\f,0) node [anchor=north] {\lbl};
+\draw [xshift=90mm,yshift=-80mm](\f,0)--(\f,2mm);
+}
+\draw [xshift=90mm,yshift=-80mm](5mm,0) node [anchor=north] {$F_N$};
+\draw [xshift=90mm, yshift=-90mm](0,0) node {в};
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Спектр $S(f)$ аналогового (а) и дискретного (б) сигнала $s(t)$. Частота
+дискретизация $F_s$ выбрана правильно (б), частота дискретизации мала. $F_N$
+равна половине частоты дискретизации. (в). Частота
+$F_N$ равна половине частоты дискретизации.}\label{spectrum-digsign}
+
+
+\newpage
+
+\begin{center}
+\begin{tikzpicture}[circuit ee IEC]
+\draw (20mm,-7mm) node {а};
+\draw [-latex] (0,0)--(40mm,0) node [anchor=west]{$t$};
+\draw [-latex] (0,0)--(0mm,30mm) node [anchor=south] {$x(t)$};
+\foreach \x in {0,30,...,360}
+{
+\draw [-latex,xshift=3mm,x=0.01cm,y=1cm,
+declare function={s1(\t)=1+0.8*sin(\t);}] (\x,0mm)--(\x,{s1(\x)});
+}
+
+\draw (70mm,-7mm) node {б};
+\draw [-latex,xshift=50mm] (0,0)--(40mm,0) node [anchor=west]{$t$};
+\draw [-latex,xshift=50mm] (0,0)--(0mm,30mm) node [anchor=south] {$y(t)$};
+
+\foreach \t in {0,30,...,330}
+{
+\draw [xshift=50mm,thick,xshift=3mm,x=0.01cm,y=1cm,
+declare function={s1(\a)=1+0.8*sin(\a);}] (\t,0mm)--(\t,{s1(\t)});
+
+\draw [thick,xshift=53mm, xshift=0.01cm*\t, y=1cm, x=0.01cm, 
+declare function={
+s1(\a)=1+0.8*sin(\a);
+s2(\b)=s1(\t)*exp(-0.02*\b);
+}]
+plot [domain=0:30, samples=5, smooth] (\x,{s2(\x)}); 
+} 
+
+\draw (120mm,-7mm) node {в};
+\draw [-latex,xshift=100mm] (0,0)--(40mm,0) node [anchor=west]{$t$};
+\draw [-latex,xshift=100mm] (0,0)--(0mm,30mm) node [anchor=south] {$y(t)$};
+
+\foreach \t in {0,30,...,330}
+{
+\draw [xshift=100mm,thick,xshift=3mm,x=0.01cm,y=1cm,
+declare function={s1(\a)=1+0.8*sin(\a);}] (\t,0mm)--(\t,{s1(\t)});
+
+\draw [thick,xshift=103mm, xshift=0.01cm*\t, y=1cm, x=0.01cm, 
+declare function={
+s1(\a)=1+0.8*sin(\a);
+s2(\b)=s1(\t)*exp(-0.2*\b);
+}]
+plot [domain=0:30, samples=5, smooth] (\x,{s2(\x)}); 
+} 
+
+
+\node (R) [yshift=-40mm,resistor={info={$R$}}] at (2,2) {};
+\node (p1) [yshift=-40mm,contact] at (3,2) {};
+\node (C) [yshift=-40mm,point up, capacitor={info={$C$}}] at (3,1) {};
+\node (p2) [yshift=-40mm,contact] at (3,0) {};
+\draw [yshift=-40mm,-latex] (p1) -- (5,2);
+\draw [yshift=-40mm,latex-] (0,2) -- (R);
+\draw [yshift=-40mm] (R) -- (p1) -- (C) -- (p2);
+\draw [yshift=-40mm,latex-] (0,0) -- (p2);
+\draw [yshift=-40mm,-latex] (p2) -- (5,0);
+\node [yshift=-40mm] at (2.5,-0.7) {г};
+\node [yshift=-40mm] at (0,1) {Вход};
+\node [yshift=-40mm] at (5,1) {Выход};
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Восстановление сигнала по отсчётам при помощи интегрирующей
+RC-цепочки. $x(t)$ --- сигнал (а) на входе RC-цепочки, $y(t)$ --- сигнал
+на выходе RC-цепочки. Постоянная времени RC много больше интервала
+дискретизации (б). Постоянная времени RC много меньше интервала
+дискретизации (в). Схема интегрирующей RC-цепочки (г)}\label{RC}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw (0,0) node [anchor=south] {$x(t)$} -- (10mm,0);
+\foreach \x / \lbl / \lbll in {0mm/Входной фильтр/ ,30mm/ АЦП со схемой
+УВХ/$x(n)$,60mm/Цифровой процессор/$y(n)$, 90mm/ЦАП/ ,120mm/Выходной
+фильтр/$y(t)$}
+{
+\draw [-latex] (\x+30mm,0) --(\x+40mm,0)  node [anchor=south east] {\lbll};
+\draw (\x+10mm,-10mm) rectangle (\x+30mm,10mm);
+\draw (\x+20mm,0mm) node [text width = 20mm,align=center] {\lbl}; 
+}
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Структурная схема ЦОС реального времени. $x(t)$ --- аналоговый входной
+сигнал, $y(t)$ --- аналоговый выходной сигнал, $x(n)$ --- цифровой входной
+сигнал, $y(n)$ --- цифровой выходной сигнал.}\label{DSP-rt}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw[-latex] (0,0) -- (0,4) node [anchor=west] {$A$};
+\draw[-latex] (0,0) -- (11,0) node [anchor=south] {$f$};
+\foreach \x / \y  in {0/3,1/2.5/,2/1.5,3/0.5,4/0.0} {
+\draw  (\x,0) -- (\x,\y) circle (0.8mm); 
+}
+\draw [very thick] (0,3) -- (1,2.5) -- (2,1.5) -- (3,0.5) -- (4,0);
+\foreach \x / \y  in {6/0,7/0.5/,8/1.5,9/2.5,10/3.0} {
+\draw (\x,0) -- (\x,\y) circle (0.8mm); 
+}
+\draw [very thick] (6,0) -- (7,0.5) -- (8,1.5) -- (9,2.5) -- (10,3.0);
+\draw (5,0) node [anchor=north] {$F_s/2$} -- (5,0.25);
+\draw (10,0) node [anchor=north] {$F_s$} -- (10,0.25);
+\draw (1,0) -- (1,-1.1);
+\draw (2,0) -- (2,-1.1);
+\draw [latex-latex](1,-1) -- (2,-1) node [pos=0.5,anchor=north]
+{$\frac{\Omega}{2\pi}$};
+\node (lblDFT) [anchor=south west,inner sep=0] at (3,3.5) {Отсчёты ДПФ $X(k)$};
+\node (lblS) [anchor=south east,inner sep=0] at (7,2.5) {Спектр $S(f)$};
+\draw [-latex] (lblDFT.south west) -- (1,2.5);
+\draw [-latex] (lblDFT.south west) -- (2,1.5);
+\draw [-latex] (lblS.south east) -- (8.5,2);
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Связь между ДПФ $X(k)$ дискретного сигнала и спектром $S(f)$
+соответствующего ему непрерывного сигнала.}\label{DFT-FT}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\node [anchor=east] at (0mm,0mm) {$x(k)$};
+\foreach \x / \lbl in {0mm/2,8mm/1,16mm/3,24mm/-1}
+{
+\draw [xshift=\x](0,-4mm) rectangle (8mm,4mm);
+\node [anchor=west,yshift=0mm] at (\x+1mm,0mm){\lbl};
+}
+
+\node [anchor=east] at (-16mm,-8mm) {$y(0-k)$};
+\foreach \x / \lbl in {-16mm/2,-8mm/1,0mm/-1}
+{
+\draw [xshift=\x,yshift=-8mm](0,-4mm) rectangle (8mm,4mm);
+\node [anchor=west,yshift=-8mm] at (\x+1mm,0mm){\lbl};
+}
+\node [anchor=west] at (8mm,-8mm) {$f(0)=2\cdot(-1)=-2$};
+
+\node [anchor=east] at (-8mm,-16mm) {$y(1-k)$};
+\foreach \x / \lbl in {-8mm/2,0mm/1,8mm/-1}
+{
+\draw [xshift=\x,yshift=-16mm](0,-4mm) rectangle (8mm,4mm);
+\node [anchor=west,yshift=-16mm] at (\x+1mm,0mm){\lbl};
+}
+\node [anchor=west] at (16mm,-16mm) {$f(1)=2-1=1$};
+
+\node [anchor=east] at (0mm,-24mm) {$y(2-k)$};
+\foreach \x / \lbl in {0mm/2,8mm/1,16mm/-1}
+{
+\draw [xshift=\x,yshift=-24mm](0,-4mm) rectangle (8mm,4mm);
+\node [anchor=west,yshift=-24mm] at (\x+1mm,0mm){\lbl};
+}
+\node [anchor=west] at (24mm,-24mm) {$f(2)=2\cdot2+1-3=2$};
+
+\node [anchor=east] at (8mm,-32mm) {$y(3-k)$};
+\foreach \x / \lbl in {8mm/2,16mm/1,24mm/-1}
+{
+\draw [xshift=\x,yshift=-32mm](0,-4mm) rectangle (8mm,4mm);
+\node [anchor=west,yshift=-32mm] at (\x+1mm,0mm){\lbl};
+}
+\node [anchor=west] at (32mm,-32mm) {$f(3)=2+3+1=6$};
+
+\node [anchor=east] at (16mm,-40mm) {$y(4-k)$};
+\foreach \x / \lbl in {16mm/2,24mm/1,32mm/-1}
+{
+\draw [xshift=\x,yshift=-40mm](0,-4mm) rectangle (8mm,4mm);
+\node [anchor=west,yshift=-40mm] at (\x+1mm,0mm){\lbl};
+}
+\node [anchor=west] at (40mm,-40mm) {$f(4)=2\cdot3-1=5$};
+
+\node [anchor=east] at (24mm,-48mm) {$y(5-k)$};
+\foreach \x / \lbl in {24mm/2,32mm/1,40mm/-1}
+{
+\draw [xshift=\x,yshift=-48mm](0,-4mm) rectangle (8mm,4mm);
+\node [anchor=west,yshift=-48mm] at (\x+1mm,0mm){\lbl};
+}
+\node [anchor=west] at (48mm,-48mm) {$f(5)=-2$};
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Вычисление линейной свёртки $f(n)$ двух последовательностей $x(n)$ и
+$y(n)$.}\label{lin-sw}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\node [anchor=east] at (0mm,0mm) {$x(k)$};
+\foreach \x / \lbl in {0mm/2,8mm/1,16mm/3,24mm/-1}
+{
+\draw [xshift=\x,yshift=0mm](0,-4mm) rectangle (8mm,4mm);
+\node [anchor=west,yshift=0mm] at (\x+1mm,0mm){\lbl};
+}
+% \node [anchor=west,yshift=0mm] at (32mm,-4mm) {$f(0)=-1$};
+
+\node [anchor=east] at (0mm,-8mm) {$y(0-k)$};
+\foreach \x / \lbl in {0mm/-1,8mm/1,16mm/2,24mm/3}
+{
+\draw [xshift=\x,yshift=-8mm](0,-4mm) rectangle (8mm,4mm);
+\node [anchor=west,yshift=-8mm] at (\x+1mm,0mm){\lbl};
+}
+\node [anchor=west,yshift=-8mm] at (32mm,0mm) {$f(0)=2$};
+
+\node [anchor=east] at (0mm,-16mm) {$y(1-k)$};
+\foreach \x / \lbl in {0mm/3,8mm/-1,16mm/1,24mm/2}
+{
+\draw [xshift=\x,yshift=-16mm](0,-4mm) rectangle (8mm,4mm);
+\node [anchor=west,yshift=-16mm] at (\x+1mm,0mm){\lbl};
+}
+\node [anchor=west,yshift=-16mm] at (32mm,0mm) {$f(1)=6$};
+
+\node [anchor=east] at (0mm,-24mm) {$y(2-k)$};
+\foreach \x / \lbl in {0mm/2,8mm/3,16mm/-1,24mm/1}
+{
+\draw [xshift=\x,yshift=-24mm](0,-4mm) rectangle (8mm,4mm);
+\node [anchor=west,yshift=-24mm] at (\x+1mm,0mm){\lbl};
+}
+\node [anchor=west,yshift=-24mm] at (32mm,0mm) {$f(2)=3$};
+
+\node [anchor=east] at (0mm,-32mm) {$y(3-k)$};
+\foreach \x / \lbl in {0mm/1,8mm/2,16mm/3,24mm/-1}
+{
+\draw [xshift=\x,yshift=-32mm](0,-4mm) rectangle (8mm,4mm);
+\node [anchor=west,yshift=-32mm] at (\x+1mm,0mm){\lbl};
+}
+\node [anchor=west,yshift=-32mm] at (32mm,0mm) {$f(3)=14$};
+
+\foreach \y in  {0mm,-8mm,-16mm,-24mm}
+{
+\draw [very thick,yshift=\y,xshift=-1*\y] (0mm,-4mm)--(8mm,-4mm)--(8mm,-12mm);
+}
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Вычисление круговой свёртки $f(n)$ двух последовательностей $x(n)$ и
+$y(n)$.}\label{circ-sw}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw[-latex](-5mm,0)--(70mm,0) node [anchor=west]{$n$};
+\foreach \t / \n / \x / \y in
+{0mm/0/1/25mm,10mm/1/1/25mm,20mm/2/1/25mm,30mm/3/0/0mm,40mm/4/0/0mm,50mm/5/0/0mm
+}
+{
+\draw (\t,0mm) node [anchor=north] {\n}--(\t,\y) node [anchor=south] {\x};
+\fill (\t,\y) circle (0.7mm);
+} 
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Пример дискретного сигнала для вычисления ДПФ.}\label{DFT-beispiel}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw [-latex] (0,0)--(80mm,0) node [anchor=west]{$t/NT$};
+\draw [-latex] (0,0)--(0mm,30mm) node [anchor=south] {$x(t)$};
+\draw [thick, x=0.02cm, y=2.5cm, declare function={
+s1(\t)=0.5+0.666*cos(\t-60)+0.1667*cos(3*\t);
+}]
+plot [domain=0:360, samples=144, smooth] (\x,{s1(\x)}); 
+\draw (0,12.5mm) node[anchor=east]{0.5} -- (2.5mm,12.5mm);
+\draw (0,25mm) node[anchor=east]{1.0} -- (2.5mm,25mm);
+\draw (36mm,0mm) node[anchor=north]{0.5} -- (36mm,2.5mm);
+\draw (72mm,0mm) node[anchor=north]{1.0} -- (72mm,2.5mm);
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Сигнал, восстановленный по коэффициентам ДПФ.}\label{DFT-osc}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\foreach \y / \lbl in
+{0mm/$x(0)$,10mm/$x(1)$,20mm/$x(2)$,30mm/$x(3)$,40mm/$x(4)$,50mm/$x(5)$,
+60mm/$x(6)$,70mm/$x(7)$} 
+{
+\draw [-latex] (0,\y)node [anchor=east]{\lbl}--(5mm,\y);
+}
+\draw (5mm,-5mm)rectangle(15mm,75mm);
+\node at (7mm,35mm) [anchor=north,rotate=90] {Разбиение};
+\foreach \y in {0mm,10mm,20mm,30mm,40mm,50mm,60mm,70mm} 
+{
+\draw [-latex] (15mm,\y)--(20mm,\y);
+}
+\draw (20mm,-5mm)rectangle(30mm,32mm);
+\draw (20mm,38mm)rectangle(30mm,75mm);
+\node at (22mm,60mm) [anchor=north,rotate=90] {Разбиение};
+\node at (22mm,10mm) [anchor=north,rotate=90] {Разбиение}; 
+
+\foreach \y in {0mm,10mm,20mm,30mm,40mm,50mm,60mm,70mm} 
+{
+\draw [-latex] (30mm,\y)--(35mm,\y);
+}
+\draw (35mm,-5mm)rectangle(45mm,12mm);
+\draw (35mm,18mm)rectangle(45mm,32mm);
+\draw (35mm,38mm)rectangle(45mm,52mm);
+\draw (35mm,58mm)rectangle(45mm,75mm);
+\node at (37mm,5mm)  [anchor=north,rotate=90] {Разб.};
+\node at (37mm,25mm) [anchor=north,rotate=90] {Разб.};
+\node at (37mm,45mm) [anchor=north,rotate=90] {Разб.};
+\node at (37mm,65mm) [anchor=north,rotate=90] {Разб.};
+
+\foreach \y in {0mm,10mm,20mm,30mm,40mm,50mm,60mm,70mm} 
+{
+\draw [-latex] (45mm,\y)--(50mm,\y);
+}
+\draw (50mm,-5mm)rectangle(75mm,12mm);
+\draw (50mm,18mm)rectangle(75mm,32mm);
+\draw (50mm,38mm)rectangle(75mm,52mm);
+\draw (50mm,58mm)rectangle(75mm,75mm);
+\node at (50mm,5mm) [anchor=west] {ДПФ $N=2$};
+\node at (50mm,25mm) [anchor=west] {ДПФ $N=2$};
+\node at (50mm,45mm) [anchor=west] {ДПФ $N=2$};
+\node at (50mm,65mm) [anchor=west] {ДПФ $N=2$};
+\foreach \y in {0mm,10mm,20mm,30mm,40mm,50mm,60mm,70mm} 
+{
+\draw [-latex] (75mm,\y)--(80mm,\y);
+}
+\draw (80mm,-5mm)rectangle(90mm,12mm);
+\draw (80mm,18mm)rectangle(90mm,32mm);
+\draw (80mm,38mm)rectangle(90mm,52mm);
+\draw (80mm,58mm)rectangle(90mm,75mm);
+\node at (82mm,5mm)  [anchor=north,rotate=90] {Объед.};
+\node at (82mm,25mm) [anchor=north,rotate=90] {Объед.};
+\node at (82mm,45mm) [anchor=north,rotate=90] {Объед.};
+\node at (82mm,65mm) [anchor=north,rotate=90] {Объедю};
+\foreach \y in {0mm,10mm,20mm,30mm,40mm,50mm,60mm,70mm} 
+{
+\draw [-latex] (90mm,\y)--(95mm,\y);
+}
+\draw (95mm,-5mm)rectangle(105mm,32mm);
+\draw (95mm,38mm)rectangle(105mm,75mm);
+\node at (97mm,60mm) [anchor=north,rotate=90] {Объединение};
+\node at (97mm,10mm) [anchor=north,rotate=90] {Объединение};
+\foreach \y in {0mm,10mm,20mm,30mm,40mm,50mm,60mm,70mm} 
+{
+\draw [-latex] (105mm,\y)--(110mm,\y);
+}
+\draw (110mm,-5mm)rectangle(120mm,75mm);
+\node at (112mm,35mm) [anchor=north,rotate=90] {Объединение};
+\foreach \y / \lbl in
+{0mm/$X(0)$,10mm/$X(1)$,20mm/$X(2)$,30mm/$X(3)$,40mm/$X(4)$,50mm/$X(5)$,
+60mm/$X(6)$,70mm/$X(7)$} 
+{
+\draw [-latex] (120mm,\y)--(125mm,\y)node [anchor=west]{\lbl};
+}
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Схема вычисления БПФ на примере последовательности из $N$
+отсчётов.}\label{FFT-algo}
+
+
+
+
+\input{Spectrum1.tex}
+\captionof{figure}{Результат применения функции fft к двухтональному
+сигналу} \label{FFT-octave-erg}
+
+
+
+
+\input{Spectrum2.tex}
+\captionof{figure}{Нормировка результата применения функции fft к двухтональному
+сигналу} \label{FFT-norm-erg}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw (-10mm,0) node [anchor=south] {$x_k$}-- (0,0);
+
+\node (s) at (40mm,-30mm)  [circle,draw, inner sep=2mm] {$\Sigma$};
+
+\foreach \x / \a in {0mm/$a_0$,20mm/$a_1$,40mm/$a_2$,60mm/$a_3$}
+{
+\fill (\x,0) circle (0.7mm);
+\draw [-latex] (\x,0)--(\x+5mm,0);
+\draw (\x+5mm, -5mm)rectangle (\x+15mm,5mm);
+\draw (\x+5mm,0) node [anchor=west] {$z^{-1}$};
+\draw [-latex] (\x,0) -- (\x,-10mm);
+\draw (\x-5mm,-10mm) node [anchor=north east] {\a} -- (\x+5mm,-10mm) --
+(\x,-20mm) -- (\x-5mm,-10mm);
+\draw  (\x+15mm,0)--(\x+20mm,0);
+\draw [-latex] (\x,-20mm) -- (s);
+}
+\draw [-latex] (80mm,0) -- (80mm,-10mm);
+\draw (75mm,-10mm) node [anchor=north east] {$a_m$} -- (85mm,-10mm) --
+(80mm,-20mm) -- (75mm,-10mm);
+\draw [-latex] (80mm,-20mm) -- (s);
+\draw [-latex] (s)--(40mm,-40mm)--(50mm,-40mm) node [anchor=west] {$y_k$};
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Схема построения трансверсального ЦФ}\label{transw-sch}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw (-10mm,0) node [anchor=south] {$x_k$}-- (0,0);
+
+\node (s) at (40mm,-30mm)  [circle,draw, inner sep=2mm] {$\Sigma$};
+
+\foreach \x / \a in {0mm/$a_0$,20mm/$a_1$,40mm/$a_2$,60mm/$a_3$}
+{
+\fill (\x,0) circle (0.7mm);
+\draw [-latex] (\x,0)--(\x+5mm,0);
+\draw (\x+5mm, -5mm)rectangle (\x+15mm,5mm);
+\draw (\x+5mm,0) node [anchor=west] {$z^{-1}$};
+\draw [-latex] (\x,0) -- (\x,-10mm);
+\draw (\x-5mm,-10mm) node [anchor=north east] {\a} -- (\x+5mm,-10mm) --
+(\x,-20mm) -- (\x-5mm,-10mm);
+\draw  (\x+15mm,0)--(\x+20mm,0);
+\draw [-latex] (\x,-20mm) -- (s);
+}
+\draw [-latex] (80mm,0) -- (80mm,-10mm);
+\draw (75mm,-10mm) node [anchor=north east] {$a_m$} -- (85mm,-10mm) --
+(80mm,-20mm) -- (75mm,-10mm);
+\draw [-latex] (80mm,-20mm) -- (s);
+\draw [-latex] (s)--(100mm,-30mm) node [anchor=west] {$y_k$};
+
+
+\foreach \x / \a in {0mm/$b_n$,20mm/$b_3$,40mm/$b_2$,60mm/$b_1$}
+{
+\draw  (\x,-60mm)--(\x+5mm,-60mm);
+\draw (\x+5mm, -65mm)rectangle (\x+15mm,-55mm);
+\draw (\x+5mm,-60mm) node [anchor=west] {$z^{-1}$};
+\draw [-latex] (\x,-60mm) -- (\x,-50mm);
+\draw (\x-5mm,-50mm) node [anchor=south east] {\a} -- (\x+5mm,-50mm) --
+(\x,-40mm) -- (\x-5mm,-50mm);
+\draw [latex-] (\x+15mm,-60mm)--(\x+20mm,-60mm);
+\draw [-latex] (\x,-40mm) -- (s);
+}
+
+\foreach \x in {20mm,40mm,60mm} 
+{
+\fill (\x,-60mm) circle (0.7mm);
+}
+
+\draw (80mm,-30mm)--(80mm,-60mm);
+\fill (80mm,-30mm) circle (0.7mm);
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Схема построения рекурсивного ЦФ}\label{Rekursiv-sch}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+
+\node (ein) at (5mm,0mm)  [circle,draw, inner sep=2mm] {$\Sigma$};
+\draw [-latex] (-8mm,0) node [anchor=east] {$x_k$}-- (ein);
+
+\draw [-latex] (ein)-- (25mm,0);
+\draw (25mm, -5mm)rectangle (35mm,5mm);
+\draw (25mm,0) node [anchor=west] {$z^{-1}$};
+\fill (20mm,0mm) circle (0.7mm);
+
+\draw [-latex] (35mm,0)-- (55mm,0);
+\draw (55mm, -5mm)rectangle (65mm,5mm);
+\draw (55mm,0) node [anchor=west] {$z^{-1}$};
+\fill (45mm,0mm) circle (0.7mm);
+
+\draw [-latex] (65mm,0)-- (80mm,0);
+\draw (80mm, -5mm) node [anchor=north west] {$a_2$}-- (80mm,5mm) --
+(90mm,0mm)--(80mm,-5mm);
+\fill (75mm,0mm) circle (0.7mm);
+
+\node (aus) at (105mm,0mm)  [circle,draw, inner sep=2mm] {$\Sigma$};
+
+\draw [-latex] (90mm,0)-- (aus);
+\draw [-latex] (aus)--(115mm,0) node [anchor=west] {$y_k$};
+
+\draw [-latex] (45mm,0mm)--(45mm,15mm)--(70mm,15mm);
+\draw (70mm, 10mm) node [anchor=north west] {$a_1$}-- (70mm,20mm) --
+(80mm,15mm)--(70mm,10mm);
+\draw [-latex] (80mm,15mm)--(85mm,15mm)--(aus);
+
+\draw [-latex] (20mm,0mm)--(20mm,25mm)--(25mm,25mm);
+\draw (25mm, 20mm) node [anchor=north west] {$a_0$}-- (25mm,30mm) --
+(35mm,25mm)--(25mm,20mm);
+\draw [-latex] (35mm,25mm)--(85mm,25mm)--(aus);
+
+\draw [-latex] (75mm,0mm)--(75mm,-25mm)--(60mm,-25mm);
+\draw (60mm,-20mm)--(60mm,-30mm) node [anchor=north west]
+{$b_2$}--(50mm,-25mm)--(60mm,-20mm);
+\draw [-latex] (50mm,-25mm)--(10mm,-25mm)--(ein);
+
+\draw [-latex] (45mm,0mm)--(45mm,-15mm)--(30mm,-15mm);
+\draw (30mm,-10mm)--(30mm,-20mm) node [anchor=north west] {$b_1$}--
+(20mm,-15mm)--(30mm,-10mm);
+\draw [-latex] (20mm,-15mm)--(15mm,-15mm)--(ein);
+
+\end{tikzpicture} 
+\end{center}
+\captionof{figure}{Схема построения канонического рекурсивного ЦФ}\label{Kanon-sch}
+
+
+
+
+
+
+\end{document}
