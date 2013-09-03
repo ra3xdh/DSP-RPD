@@ -1,0 +1,283 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{mathtext}
+\usepackage[T2A]{fontenc}
+\usepackage[koi8-r]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage[justification=centering,labelsep=period]{caption}
+\usepackage{indentfirst}
+\usepackage[pdftex]{graphicx,color}
+\usepackage{textcomp}
+\usepackage{gnuplot-lua-tikz}
+\usepackage{tikz}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\setlength{\topmargin} {-1.5in}
+\addtolength{\topmargin} {20mm}
+\setlength{\oddsidemargin} {-1in}
+\addtolength{\oddsidemargin} {30mm}
+\textheight255mm
+\textwidth165mm
+
+\makeatletter
+\renewcommand\@biblabel[1]{#1.}
+\makeatother
+
+\unitlength=1mm
+
+\usepackage{listings} %% собственно, это и есть пакет listings
+% \usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}} %% это сделает текст заголовка белым
+%% код ниже нарисует серую рамочку вокруг заголовка кода.
+\DeclareCaptionFormat{listing}{\colorbox{white}{\parbox{\textwidth}{#1#2#3}}}
+% \captionsetup[lstlisting]{format=listing,labelfont=black,textfont=black}
+\renewcommand{\lstlistingname}{Листинг}
+
+
+\usetikzlibrary{circuits}
+\usetikzlibrary{circuits.ee}
+\usetikzlibrary{circuits.ee.IEC}
+\usetikzlibrary{arrows}
+\usetikzlibrary{patterns}
+
+\begin{document}
+
+\lstset{ %
+ language=Bash,                 % выбор языка для подсветки (здесь это С)
+ basicstyle=\small\ttfamily, % размер и начертание шрифта для подсветки кода
+ numbers=left,               % где поставить нумерацию строк (слева\справа)
+ numberstyle=\tiny,           % размер шрифта для номеров строк
+ stepnumber=1,                   % размер шага между двумя номерами строк
+ numbersep=5pt,                % как далеко отстоят номера строк от
+ % подсвечиваемого кода
+ backgroundcolor=\color{white}, % цвет фона подсветки - используем
+ showspaces=false,            % показывать или нет пробелы специальными
+% отступами
+ showstringspaces=false,      % показывать или нет пробелы в строках
+ showtabs=false,             % показывать или нет табуляцию в строках
+ frame=single,              % рисовать рамку вокруг кода
+ tabsize=2,                 % размер табуляции по умолчанию равен 2 пробелам
+ captionpos=t,              % позиция заголовка вверху [t] или внизу [b] 
+ breaklines=true,           % автоматически переносить строки (да\нет)
+% wordwrap=true,
+ breakatwhitespace=false, % переносить строки только если есть пробел
+ escapeinside={\%*}{*)}   % если нужно добавить комментарии в коде
+ }%
+\lstset{language=Bash}
+\begin{lstlisting}[caption=Скрипт для генерации синусоидального сигнала в
+системе Octave, label=Octave-sinegen]
+#!/usr/bin/octave -qf
+pkg load audio # подгружаем библиотеку для работы со звуком
+dur = 1.0; # длительность сигнала 1 секунда
+fs = 16000; # частота дискретизации 16 кГц=16000 Гц
+t = 0 : (1/fs) : dur; # генерируем вектор (матрицу-строку) содержащий 
+# отсчёты времени от нуля до 1 секунды через интервал дтскретизации
+# T=(1/fs)=(1/16000) секунды
+t=t'; # трансформируем матрицу-строку в матрицу-столбец, т.к функции
+# генерации  звука работают только с матрицей-столбцом
+s = sin( 2*pi*500*t ); # вычислям 16000 отсчётов синусоидального 
+# сигнала с  частотой 500 Гц
+plot(t,s); # строим график синусоиды
+axis(([0,0.01])'); # на отрезке от 0 до 0.01 секунды
+wavwrite(s,fs,"sinus.wav"); # записываем сгенерированыый сигнал в
+#wav-файл, который затем можно проиграть в любом аудиопроигрываетеле.
+sound(s,16000); # отправляем сгенерированый  звук на звуковую карту.
+# В динамиках компьютера слышен тон частотой 500 Гц
+# и длительностью 1 секунда
+pause;
+\end{lstlisting}
+\lstset{language=C}
+\begin{lstlisting}[caption=Алгоритм для генерации звуковых
+сигналов для программ на языке С,label=C-algo]
+unsigned signal[length]; // объявляем массив содержащий отсчёты сигнала
+generate_signal(signal); // заполняем массив отсчётами сигнала, которые 
+                         // генерирует функция generate_signal
+init_audio_ouput_device(); //инициализируем звуковую карту
+send_signal_to_soundcard(); // отправляем сигнал на звуковую карту  
+\end{lstlisting}
+\begin{lstlisting}[caption=Программа на С для генерации
+тонального сигнала частотой 1000 Гц.,label=OSS-beispiel]
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <sys/soundcard.h>
+#include <math.h>
+
+#define SIZE (48)
+#define PI (4*atan(1))
+
+int fd_out;
+const int freq = 1000; // частота сигнала, Гц
+int sample_rate = 48000; // частота дискретизации 48 кГц
+short buf[SIZE]; // буфер для хранения отсчётов сигнала - длина буфера - один
+период синусоиды (48000 Гц)/(1000 Гц) = 48 отсчётов
+
+static void generate_sinewave (void) // заполняем буфер отсчётами
+// синусоидального сигнала
+{
+  int i;
+  for (i=0;i<SIZE;i++) buf[i] = (short
+int)lround(32767*sin(2*PI*i*freq/sample_rate));
+}
+
+void write_sinewave(void) // посылаем сгенерированный звуковой сигнал
+// на звуковую карту
+{
+  if (write (fd_out, buf, sizeof (buf)) != sizeof (buf))
+    {
+      perror ("Audio write");
+      exit (-1);
+    }
+}
+
+
+static int open_audio_device (char *name, int mode) // инициализировать
+// звуковую карту
+{
+  int tmp, fd;
+
+  if ((fd = open (name, mode, 0)) == -1)
+    {
+      perror (name);
+      exit (-1);
+    }
+
+
+  tmp = AFMT_S16_NE; // установить разрядность 16 бит
+  if (ioctl (fd, SNDCTL_DSP_SETFMT, &tmp) == -1)
+    {
+      perror ("SNDCTL_DSP_SETFMT");
+      exit (-1);
+    }
+
+  if (tmp != AFMT_S16_NE)
+    {
+      fprintf (stderr,
+	       "The device doesn't support the 16 bit sample format.\n");
+      exit (-1);
+    }
+
+  tmp = 1; // установить моно режим
+  if (ioctl (fd, SNDCTL_DSP_CHANNELS, &tmp) == -1)
+    {
+      perror ("SNDCTL_DSP_CHANNELS");
+      exit (-1);
+    }
+
+  if (tmp != 1)
+    {
+      fprintf (stderr, "The device doesn't support mono mode.\n");
+      exit (-1);
+    }
+
+  // установить частоту дискретизации 48 кГц.
+  if (ioctl (fd, SNDCTL_DSP_SPEED, &sample_rate) == -1)
+    {
+      perror ("SNDCTL_DSP_SPEED");
+      exit (-1);
+    }
+
+  return fd;
+}
+
+int main (int argc, char *argv[])
+{
+
+  char *name_out = "/dev/dsp"; // имя устройства звуковой карты
+
+  if (argc > 1) name_out = argv[1];
+
+  fd_out = open_audio_device (name_out, O_WRONLY);
+
+  generate_sinewave(); // готовим синусоидальный сигнал
+
+  while (1) write_sinewave (); // посылаем в бесконечном цикле период синусоиды
+на звуковую карту
+
+  exit (0);
+}
+
+\end{lstlisting}
+\lstset{language=Bash}
+\begin{lstlisting}[caption=Скрипт на GNU/Octave для реализации построения
+вычисления спектра сигнала., label=FFT-octave ]
+#!/usr/bin/octave -qf
+Ns=1000; # число отсчётов сигнала
+F1=100; # частота первого тона 100 Гц
+F2=200; # частота второго тона 200 гц
+dur=0.5; # длительность сигнала 0.5 сек
+A0=0.6; # постоянная составляющая 0.6 В
+A1=0.8; # амплиткда первого тона 0.8 В
+A2=1.4; # амплитуда второго тона 1.4В
+An=6; # амплитуда шума 6 В
+Fs=Ns/dur; # частота дисктеризации. Делим число выборок 
+# на длительность сигнала.
+t=(0:dur/Ns:dur)'; # создаём вектор из 2000 отсчёов по вермени
+Signal=A0 + A1*sin(2*pi*F1*t) + A2*sin(2*pi*F2*t); # сигнал
+# Сигнал состоит из постоянной составляющей и двух тонов амплитудой
+# А1 и A2
+S=fft(Signal); # вычисляем ДПФ, то есть спектр
+F=0:(Fs/Ns):Fs; # частота
+subplot(2,1,1); 
+plot(t,Signal); # строим график сигнала
+subplot(2,1,2);
+plot(F,abs(S)); # строим график спектра
+pause; 
+\end{lstlisting}
+\lstset{language=Bash}
+\begin{lstlisting}[caption=Скрипт на GNU/Octave для реализации построения
+вычисления спектра сигнала., label=FFT-norm ]
+#!/usr/bin/octave -qf
+pkg load signal
+Ns=1000; # число отсчётов сигнала
+F1=100; # частота первого тона 100 Гц
+F2=200; # частота второго тона 200 гц
+dur=0.5; # длительность сигнала 0.5 сек
+A0=0.6; # постоянная составляющая 0.6 В
+A1=0.8; # амплиткда первого тона 0.8 В
+A2=1.4; # амплитуда второго тона 1.4В
+An=6; # амплитуда шума 6 В
+Fs=Ns/dur; # частота дискретизации. Делим число выборок 
+# на длительность сигнала.
+t=(0:dur/Ns:dur)'; # создаём вектор из 2000 отсчёов по вермени
+Signal=A0 + A1*sin(2*pi*F1*t) + A2*sin(2*pi*F2*t); # сигнал
+# Сишнал состоит из постоянной составляющей и двух тонов амплитудой
+# А1 и A2
+S=fft(Signal); # вычисляем ДПФ, то есть спектр
+S=(2/Ns)*abs(S(1:Ns/2)); # отсекаем половину спектра, которая не несёт полезной
+информации
+S(1)=0.5*S(1); # нормируем постоянную составляющую
+F=0:(Fs/Ns):Fs-1; # частота
+F=F(1:(length(F)/2)); # отсекаем половину частоты
+
+subplot(2,1,1); 
+plot(t,Signal); # строим график сигнала
+subplot(2,1,2);
+plot(F,abs(S)); # строим график спектра
+axis([0,300]);
+
+pause;
+\end{lstlisting}
+\lstset{language=C}
+\begin{lstlisting}[caption=Код на языке С для реализации цифрового
+фильтра.,label=KIX-filt-C]
+float Filter(float xn)
+{
+nm1=N-1;
+yn=0;
+for (k=0;k,nm1;++k) {     //смещение данных чтобы
+   x[nm1-k]=x[nm1-k-1];   // обсвободить место для новой выборки
+   x[0]=xn;
+} 
+for (k=0;k,N;++k) {
+   yn=yn+h[k]*x[k];       //данные фильтруются и формируется
+}                         //новая выборка
+return yn;                // возвращается выходная выборка фильтра
+}
+\end{lstlisting}
+\end{document}
