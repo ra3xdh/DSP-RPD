@@ -1205,19 +1205,180 @@ plot [domain=0:360, samples=144, smooth] (\x,{s1(\x)});
 
 
 
+\begin{center}
+\begin{tikzpicture}
+\node (X0) at (0,0) [draw] {$X_0(k)$};
+\node (X1) at (0,-20mm) [draw] {$W^k_N X_1(k)$};
+\node (X11)  at (30mm,0) [anchor=west,draw] {$X(k)=X_0(k)+W^k_N X_1(k)$};
+\node (X12) at (30mm,-20mm) [anchor=west,draw] {$X(k+N/2)=X_0(k)-W_N^kX_1(k)$};
+\draw [-latex] (X0)--(X11);
+\draw [-latex] (X0)--(X12);
+\draw [-latex] (X1)--(X12);
+\draw [-latex] (X1)--(X11);
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Процедура объединения на основе графа
+<<бабочка>>.}
 
+\newpage
+
+\begin{center}
+\begin{tikzpicture}
+\node (x0) [draw]  at (0,0mm) {$x(0)$};
+\node (x1) [draw]  at (0,-15mm) {$x(1)$};
+\node (x2) [draw]  at (0,-30mm) {$x(2)$};
+\node (x3) [draw]  at (0,-45mm) {$x(3)$};
+\node (x4) [draw]  at (0,-60mm) {$x(4)$};
+\node (x5) [draw]  at (0,-75mm) {$x(5)$};
+\node (x6) [draw]  at (0,-90mm) {$x(6)$}; 
+\node (x7) [draw]  at (0,-105mm) {$x(7)$};
+
+\node (x01) [draw]  at (20mm,0mm) {$x(0)$};
+\node (x21) [draw]  at (20mm,-15mm) {$x(2)$};
+\node (x41) [draw]  at (20mm,-30mm) {$x(4)$};
+\node (x61) [draw]  at (20mm,-45mm) {$x(6)$};
+\node (x11) [draw]  at (20mm,-60mm) {$x(1)$};
+\node (x31) [draw]  at (20mm,-75mm) {$x(3)$};
+\node (x51) [draw]  at (20mm,-90mm) {$x(5)$};
+\node (x71) [draw]  at (20mm,-105mm) {$x(7)$};
+
+\draw [-latex] (x0.east)--(x01.west);
+\draw [-latex] (x1.east)--(x11.west);
+\draw [-latex] (x2.east)--(x21.west);
+\draw [-latex] (x3.east)--(x31.west);
+\draw [-latex] (x4.east)--(x41.west);
+\draw [-latex] (x5.east)--(x51.west);
+\draw [-latex] (x6.east)--(x61.west);
+\draw [-latex] (x7.east)--(x71.west);
+
+\node (x02) [draw]  at (40mm,0mm) {$x(0)$};
+\node (x42) [draw]  at (40mm,-15mm) {$x(4)$};
+\node (x22) [draw]  at (40mm,-30mm) {$x(2)$};
+\node (x62) [draw]  at (40mm,-45mm) {$x(6)$};
+\node (x12) [draw]  at (40mm,-60mm) {$x(1)$};
+\node (x52) [draw]  at (40mm,-75mm) {$x(5)$};
+\node (x32) [draw]  at (40mm,-90mm) {$x(3)$};
+\node (x72) [draw]  at (40mm,-105mm) {$x(7)$};
+
+\draw [-latex] (x01.east)--(x02.west);
+\draw [-latex] (x11.east)--(x12.west);
+\draw [-latex] (x21.east)--(x22.west);
+\draw [-latex] (x31.east)--(x32.west);
+\draw [-latex] (x41.east)--(x42.west);
+\draw [-latex] (x51.east)--(x52.west);
+\draw [-latex] (x61.east)--(x62.west);
+\draw [-latex] (x71.east)--(x72.west);
+
+\node (X000) [draw]  at (60mm,0mm) {$X_{00}(0)$};
+\node (X001) [draw]  at (60mm,-15mm) {$X_{00}(1)$};
+\node (X010) [draw]  at (60mm,-30mm) {$X_{01}(0)$};
+\node (X011) [draw]  at (60mm,-45mm) {$X_{01}(1)$};
+\node (X100) [draw]  at (60mm,-60mm) {$X_{10}(0)$};
+\node (X101) [draw]  at (60mm,-75mm) {$X_{10}(1)$};
+\node (X110) [draw]  at (60mm,-90mm) {$X_{11}(0)$};
+\node (X111) [draw]  at (60mm,-105mm) {$X_{11}(1)$};
+
+\draw [-latex] (x02.east)--(X000.west);
+\draw [-latex] (x02.east)--(X001.west);
+\draw [-latex] (x42.east)--(X000.west);
+\draw [-latex] (x42.east)--(X001.west);
+
+\draw [-latex] (x22.east)--(X010.west);
+\draw [-latex] (x22.east)--(X011.west);
+\draw [-latex] (x62.east)--(X010.west);
+\draw [-latex] (x62.east)--(X011.west);
+
+\draw [-latex] (x12.east)--(X100.west);
+\draw [-latex] (x12.east)--(X101.west);
+\draw [-latex] (x52.east)--(X100.west);
+\draw [-latex] (x52.east)--(X101.west);
+
+\draw [-latex] (x32.east)--(X110.west);
+\draw [-latex] (x32.east)--(X111.west);
+\draw [-latex] (x72.east)--(X110.west);
+\draw [-latex] (x72.east)--(X111.west);
+
+\node (X00) [draw]  at (95mm,0mm) {$X_{0}(0)$};
+\node (X01) [draw]  at (95mm,-15mm) {$X_{0}(1)$};
+\node (X02) [draw]  at (95mm,-30mm) {$X_{0}(2)$};
+\node (X03) [draw]  at (95mm,-45mm) {$X_{0}(3)$};
+\node (X10) [draw]  at (95mm,-60mm) {$X_{1}(0)$};
+\node (X11) [draw]  at (95mm,-75mm) {$X_{1}(1)$};
+\node (X12) [draw]  at (95mm,-90mm) {$X_{1}(2)$};
+\node (X13) [draw]  at (95mm,-105mm) {$X_{1}(3)$};
+
+\draw [-latex] (X000.east)--(X00.west);
+\draw [-latex] (X000.east)--(X02.west);
+\draw [-latex] (X001.east)--(X01.west);
+\draw [-latex] (X001.east)--(X03.west);
+\draw [-latex] (X010.east)--(X00.west);
+\draw [-latex] (X010.east)--(X02.west);
+\draw [-latex] (X011.east)--(X01.west);
+\draw [-latex] (X011.east)--(X03.west);
+
+\draw [-latex] (X100.east)--(X10.west);
+\draw [-latex] (X100.east)--(X12.west);
+\draw [-latex] (X101.east)--(X11.west);
+\draw [-latex] (X101.east)--(X13.west);
+\draw [-latex] (X110.east)--(X10.west);
+\draw [-latex] (X110.east)--(X12.west);
+\draw [-latex] (X111.east)--(X11.west);
+\draw [-latex] (X111.east)--(X13.west);
+
+\node (fX0) [draw] at (130mm,0mm) [anchor=west] {$X(0)$};
+\node (fX1) [draw]  at (130mm,-15mm) [anchor=west] {$X(1)$};
+\node (fX2) [draw]  at (130mm,-30mm) [anchor=west] {$X(2)$};
+\node (fX3) [draw]  at (130mm,-45mm) [anchor=west] {$X(3)$};
+\node (fX4) [draw]  at (130mm,-60mm) [anchor=west] {$X(4)$};
+\node (fX5) [draw]  at (130mm,-75mm) [anchor=west] {$X(5)$};
+\node (fX6) [draw]  at (130mm,-90mm) [anchor=west] {$X(6)$};
+\node (fX7) [draw]  at (130mm,-105mm) [anchor=west] {$X(7)$};
+
+\draw [-latex] (X00.east)--(fX0.west);
+\draw [-latex] (X00.east)--(fX4.west);
+\draw [-latex] (X01.east)--(fX1.west);
+\draw [-latex] (X01.east)--(fX5.west);
+\draw [-latex] (X02.east)--(fX2.west);
+\draw [-latex] (X02.east)--(fX6.west);
+\draw [-latex] (X03.east)--(fX3.west);
+\draw [-latex] (X03.east)--(fX7.west);
+
+\draw [-latex] (X10.east)--(fX4.west);
+\draw [-latex] (X10.east)--(fX0.west);
+\draw [-latex] (X11.east)--(fX1.west);
+\draw [-latex] (X11.east)--(fX5.west);
+\draw [-latex] (X12.east)--(fX2.west);
+\draw [-latex] (X12.east)--(fX6.west);
+\draw [-latex] (X13.east)--(fX3.west);
+\draw [-latex] (X13.east)--(fX7.west);
+\end{tikzpicture}
+\end{center}
+\captionof{figure}{Алгоритм ДПФ с прореживанием по времени. Пример для
+последовательности из $N=8$ элементов.}
+
+\begin{center}
 \input{Spectrum1.tex}
+\end{center}
 \captionof{figure}{Результат применения функции fft к двухтональному
 сигналу} 
 
-
-
-
+\begin{center}
 \input{Spectrum2.tex}
+\end{center}
 \captionof{figure}{Нормировка результата применения функции fft к двухтональному
 сигналу} 
 
+\begin{center}
+\input{window-ex.tex} 
+\end{center}
+\captionof{figure}{Пример применения оконной функции Хэмминга.}
 
+\begin{center}
+\input{window-spect.tex} 
+\end{center}
+\captionof{figure}{ДПФ сигнала без применения окна (верхний график, видно
+размытие спектра) и с применением окна Хэмминга (нижний график) --- размытие
+спектра устранено.}
 
 
 \begin{center}
