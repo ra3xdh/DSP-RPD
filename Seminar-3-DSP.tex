@@ -247,6 +247,418 @@ plot [domain=0:360, samples=144, smooth] (\x,{s1(\x)});
 \caption{Сигнал, восстановленный по коэффициентам ДПФ.}\label{DFT-osc}
 \end{figure}
 
+
+\subsection{Быстрое преобразование Фурье}
+
+Для вычисления ДПФ последовательности из $N$ отсчётов требуется произвести
+$N^2$ операций с комплексными числами, так каждому из элементов
+последовательности $x(n)$ ставится в соответствие элемент $X(k)$, вычисление
+которого требует $N$ операций. Вычисления по такому алгоритму для больших
+массивов требуют значительных затрат машинного времени. Для преодоления данного
+недостатка был разработан алгоритм быстрого преобразования Фурье (БПФ).
+
+При вычислении по алгоритму БПФ требуется обработка входного массива с меньшим
+числом элементов. Для вычисления коэффициентов ДПФ для последовательности
+из $N$ элементов по алгоритму БПФ требуется $N\log_2 N$ операций. Для
+вычислений по методу БПФ требуется массив, содержащий $N=2^p$ отсчётов, где $p$
+--- целое число. Такая размерность входных данных удобна для обработки данных
+на ЭВМ, так как в двоичной системе счисления числа вида $2^p$ являются
+<<круглыми>>. Если входной массив данных не укладывается в такую размерность то
+его дополняют нулями.
+
+Если при вычислении ДПФ заменить вычисление одного ДПФ для $N$ отсчётов
+вычислением двух ДПФ для двух последовательностей из $N/2$ отсчётов, то число
+вычислительных операций уменьшится в два раза. Можно и далее разбивать исходную
+последовательности снова пополам, до тех пор пока мы не разобьём её на
+последовательности из двух элементов. Для таких последовательностей вычисляется
+ДПФ. Чтобы перейти снова к коэффициентам ДПФ для исходной последовательности из
+$N$ элементов служат алгоритмы объединения. Схематически данный алгоритм
+показан на рис.\ref{FFT-algo}.
+\begin{figure}[!ht]
+\begin{center}
+\begin{tikzpicture}
+\foreach \y / \lbl in
+{0mm/$x(0)$,10mm/$x(1)$,20mm/$x(2)$,30mm/$x(3)$,40mm/$x(4)$,50mm/$x(5)$,
+60mm/$x(6)$,70mm/$x(7)$} 
+{
+\draw [-latex] (0,\y)node [anchor=east]{\lbl}--(5mm,\y);
+}
+\draw (5mm,-5mm)rectangle(15mm,75mm);
+\node at (7mm,35mm) [anchor=north,rotate=90] {Разбиение};
+\foreach \y in {0mm,10mm,20mm,30mm,40mm,50mm,60mm,70mm} 
+{
+\draw [-latex] (15mm,\y)--(20mm,\y);
+}
+\draw (20mm,-5mm)rectangle(30mm,32mm);
+\draw (20mm,38mm)rectangle(30mm,75mm);
+\node at (22mm,60mm) [anchor=north,rotate=90] {Разбиение};
+\node at (22mm,10mm) [anchor=north,rotate=90] {Разбиение}; 
+
+\foreach \y in {0mm,10mm,20mm,30mm,40mm,50mm,60mm,70mm} 
+{
+\draw [-latex] (30mm,\y)--(35mm,\y);
+}
+\draw (35mm,-5mm)rectangle(45mm,12mm);
+\draw (35mm,18mm)rectangle(45mm,32mm);
+\draw (35mm,38mm)rectangle(45mm,52mm);
+\draw (35mm,58mm)rectangle(45mm,75mm);
+\node at (37mm,5mm)  [anchor=north,rotate=90] {Разб.};
+\node at (37mm,25mm) [anchor=north,rotate=90] {Разб.};
+\node at (37mm,45mm) [anchor=north,rotate=90] {Разб.};
+\node at (37mm,65mm) [anchor=north,rotate=90] {Разб.};
+
+\foreach \y in {0mm,10mm,20mm,30mm,40mm,50mm,60mm,70mm} 
+{
+\draw [-latex] (45mm,\y)--(50mm,\y);
+}
+\draw (50mm,-5mm)rectangle(75mm,12mm);
+\draw (50mm,18mm)rectangle(75mm,32mm);
+\draw (50mm,38mm)rectangle(75mm,52mm);
+\draw (50mm,58mm)rectangle(75mm,75mm);
+\node at (50mm,5mm) [anchor=west] {ДПФ $N=2$};
+\node at (50mm,25mm) [anchor=west] {ДПФ $N=2$};
+\node at (50mm,45mm) [anchor=west] {ДПФ $N=2$};
+\node at (50mm,65mm) [anchor=west] {ДПФ $N=2$};
+\foreach \y in {0mm,10mm,20mm,30mm,40mm,50mm,60mm,70mm} 
+{
+\draw [-latex] (75mm,\y)--(80mm,\y);
+}
+\draw (80mm,-5mm)rectangle(90mm,12mm);
+\draw (80mm,18mm)rectangle(90mm,32mm);
+\draw (80mm,38mm)rectangle(90mm,52mm);
+\draw (80mm,58mm)rectangle(90mm,75mm);
+\node at (82mm,5mm)  [anchor=north,rotate=90] {Объед.};
+\node at (82mm,25mm) [anchor=north,rotate=90] {Объед.};
+\node at (82mm,45mm) [anchor=north,rotate=90] {Объед.};
+\node at (82mm,65mm) [anchor=north,rotate=90] {Объедю};
+\foreach \y in {0mm,10mm,20mm,30mm,40mm,50mm,60mm,70mm} 
+{
+\draw [-latex] (90mm,\y)--(95mm,\y);
+}
+\draw (95mm,-5mm)rectangle(105mm,32mm);
+\draw (95mm,38mm)rectangle(105mm,75mm);
+\node at (97mm,60mm) [anchor=north,rotate=90] {Объединение};
+\node at (97mm,10mm) [anchor=north,rotate=90] {Объединение};
+\foreach \y in {0mm,10mm,20mm,30mm,40mm,50mm,60mm,70mm} 
+{
+\draw [-latex] (105mm,\y)--(110mm,\y);
+}
+\draw (110mm,-5mm)rectangle(120mm,75mm);
+\node at (112mm,35mm) [anchor=north,rotate=90] {Объединение};
+\foreach \y / \lbl in
+{0mm/$X(0)$,10mm/$X(1)$,20mm/$X(2)$,30mm/$X(3)$,40mm/$X(4)$,50mm/$X(5)$,
+60mm/$X(6)$,70mm/$X(7)$} 
+{
+\draw [-latex] (120mm,\y)--(125mm,\y)node [anchor=west]{\lbl};
+}
+\end{tikzpicture}
+\end{center}
+\caption{Схема вычисления БПФ на примере последовательности из $N$
+отсчётов.}\label{FFT-algo}
+\end{figure}
+
+Одним из алгоритмов вычисления БПФ является алгоритм с прореживанием по
+времени. 
+
+Прореживание по времени заключается в разбиении исходной последовательности
+отсчётов $x(n)$ из $N$ элементов на две последовательности $x_0(n)$ и $x_1(n)$
+содержащих по $N/2$ отсчётов таким образом, что последовательность $x_0(n)$
+содержит отсчёты исходной последовательности с чётными индексами, а
+последовательность $x_1(n)$ --- отсчёты исходной последовательности с нечётными
+индексами. 
+
+
+
+Перепишем выражение для ДПФ в виде:
+\begin{equation}
+ X(k)=\frac{1}{N}\sum_{n=0}^{N-1}x(n)e^{-j2\pi\frac{kn}{N}}=\frac{1}{N}
+\sum_{n=0}^{N-1}x(n)W^{nk}_N
+\end{equation}
+
+Обозначение $W^{nk}_N$ называется поворотным коэффициентом:
+\begin{equation}
+ W^{nk}_N=e^{\frac{-j2\pi n k}{N}}
+\end{equation}
+
+Рассмотрим ДПФ сигнала прореженного по времени. Его можно представить в виде
+суммы ДПФ от двух половинок сигнала (сумма разбивается на две суммы):
+\begin{equation}
+ X(k)=\sum_{n=0}^{N/2-1}x(2n)W^{2nk}_N+\sum_{n=0}^{N/2-1}x(2n+1)W^{(2n+1)k}_N=
+\sum_{n=0}^{N/2-1}x(2n)W^{2nk}_N+W^k_N\sum_{n=0}^{N/2-1}x(2n+1)W^{2nk}_N
+\label{DFT_halb}
+\end{equation}
+
+Если рассмотреть только первую половину спектра $X(k)$ при $k=0\ldots N/2$ и
+учесть периодичность поворотных коэффициентов:
+\begin{equation}
+ W^{2nk}_N=e^{-j\frac{2\pi}{N}2nk}=W^{nk}_{N/2}
+\end{equation}
+
+тогда можно (\ref{DFT_halb}) записать как:
+\begin{equation}
+ X(k)=\sum_{n=0}^{N/2-1}x(2n)W^{nk}_{N/2}+W^k_N\sum_{n=0}^{N/2-1}x(2n+1)W^{2nk}_
+{N/2}=X_0(k)+W^k_N X_1(k)
+\end{equation}
+\begin{equation}
+ X_0(k)=\sum_{n=0}^{N/2-1}x_0(n)W^{nk}_{N/2}
+ X_1(k)=\sum_{n=0}^{N/2-1}x_1(n)W^{nk}_{N/2}
+\end{equation}
+
+Где $X_0(k)$ и $X_1(k)$ --- две $N/2$-точечные ДПФ от <<чётной>> и <<нечётной>>
+половин исходной последовательности.
+
+Таким образом прореживание по времени можно считать алгоритмом разбиения
+последовательности на две половинной длительности. Первая половина
+объединённого спектра есть сумма спектра <<чётной>> последовательности и спектра
+<<нечётной>> последовательности, умноженного на поворотные коэффициенты. Таким
+образом сокращается число операций умножения комплексных чисел и экономится
+машинное время.
+
+Рассмотри вторую половину спектра $X(k+N/2)$, $k=0\ldots N/2-1$:
+\begin{equation}
+ X(k+N/2)=\sum_{n=0}^{N/2-1}x(2n)W^{n(k+N/2)}_{N/2}+W^{k+N/2}_{N/2}
+\sum_{n=0}^{N/2-1}x(2n+1)W^{n(k+N/2)}_{N/2} \label{spektrum-zweite}
+\end{equation}
+
+Рассмотрим множитель:
+\begin{equation}
+ W^{n(k+N/2)}_{N/2}=W^{nN/2}_{N/2}W^{nk}_{N/2}
+\end{equation}
+
+
+Учтём, что:
+\begin{equation}
+ W^{nN/2}_{N/2}=e^{-j\frac{2\pi n N/2}{N/2}}=e^{-j2\pi n}=1
+\end{equation}
+
+Рассмотри поворотный коэффициент в выражении (\ref{spektrum-zweite}):
+\begin{equation}
+ W^{k+N/2}_N=W^{N/2}_N W^k_N=e^{-j\frac{2\pi N}{2 N}}W^k_N=-W^k_N
+\end{equation}
+
+Тогда выражение (\ref{spektrum-zweite}) принимает вид:
+\begin{equation}
+X(k+N/2)=\sum_{n=0}^{N/2-1}x(2n)W^{nk}_{N/2}-W^k_N\sum_{n=0}^{N/2-1}x(2n+1)
+W^{nk}_{N/2}=X_0(k)-W^k_N X_1(k) 
+\end{equation}
+
+Окончательно можно записать:
+\begin{equation}
+ X(k)=X_0(k)+W^k_N X_1(k) \label{1FFT}
+\end{equation}
+\begin{equation}
+ X(k+N/2)=X_0(k)-W^k_N X_1(k) \label{2FFT}
+\end{equation}
+
+Выражения (\ref{1FFT}) и (\ref{2FFT}) представляют собой алгоритм объединения
+при прореживании по времени. Данную процедуру можно представить в виде графа
+(рис.\ref{FFT-bab}), который имеет характерную форму. Поэтому данный алгоритм
+называется <<бабочка>>. 
+\begin{figure}[!ht]
+\begin{center}
+\begin{tikzpicture}
+\node (X0) at (0,0) [draw] {$X_0(k)$};
+\node (X1) at (0,-20mm) [draw] {$W^k_N X_1(k)$};
+\node (X11)  at (30mm,0) [anchor=west,draw] {$X(k)=X_0(k)+W^k_N X_1(k)$};
+\node (X12) at (30mm,-20mm) [anchor=west,draw] {$X(k+N/2)=X_0(k)-W_N^kX_1(k)$};
+\draw [-latex] (X0)--(X11);
+\draw [-latex] (X0)--(X12);
+\draw [-latex] (X1)--(X12);
+\draw [-latex] (X1)--(X11);
+\end{tikzpicture}
+\end{center}
+\caption{Процедура объединения на основе графа <<бабочка>>.}\label{FFT-bab}
+\end{figure}
+
+ДПФ сигнала прореженного по времени можно представить в виде
+суммы ДПФ от двух половинок сигнала (сумма разбивается на две суммы).
+
+Графически данный алгоритм можно представить как показано на
+рис.\ref{FFT1}.
+
+\begin{figure}[!ht]
+\begin{center}
+\begin{tikzpicture}
+\node (x0) [draw]  at (0,0mm) {$x(0)$};
+\node (x1) [draw]  at (0,-15mm) {$x(1)$};
+\node (x2) [draw]  at (0,-30mm) {$x(2)$};
+\node (x3) [draw]  at (0,-45mm) {$x(3)$};
+\node (x4) [draw]  at (0,-60mm) {$x(4)$};
+\node (x5) [draw]  at (0,-75mm) {$x(5)$};
+\node (x6) [draw]  at (0,-90mm) {$x(6)$}; 
+\node (x7) [draw]  at (0,-105mm) {$x(7)$};
+
+\node (x01) [draw]  at (20mm,0mm) {$x(0)$};
+\node (x21) [draw]  at (20mm,-15mm) {$x(2)$};
+\node (x41) [draw]  at (20mm,-30mm) {$x(4)$};
+\node (x61) [draw]  at (20mm,-45mm) {$x(6)$};
+\node (x11) [draw]  at (20mm,-60mm) {$x(1)$};
+\node (x31) [draw]  at (20mm,-75mm) {$x(3)$};
+\node (x51) [draw]  at (20mm,-90mm) {$x(5)$};
+\node (x71) [draw]  at (20mm,-105mm) {$x(7)$};
+
+\draw [-latex] (x0.east)--(x01.west);
+\draw [-latex] (x1.east)--(x11.west);
+\draw [-latex] (x2.east)--(x21.west);
+\draw [-latex] (x3.east)--(x31.west);
+\draw [-latex] (x4.east)--(x41.west);
+\draw [-latex] (x5.east)--(x51.west);
+\draw [-latex] (x6.east)--(x61.west);
+\draw [-latex] (x7.east)--(x71.west);
+
+\node (x02) [draw]  at (40mm,0mm) {$x(0)$};
+\node (x42) [draw]  at (40mm,-15mm) {$x(4)$};
+\node (x22) [draw]  at (40mm,-30mm) {$x(2)$};
+\node (x62) [draw]  at (40mm,-45mm) {$x(6)$};
+\node (x12) [draw]  at (40mm,-60mm) {$x(1)$};
+\node (x52) [draw]  at (40mm,-75mm) {$x(5)$};
+\node (x32) [draw]  at (40mm,-90mm) {$x(3)$};
+\node (x72) [draw]  at (40mm,-105mm) {$x(7)$};
+
+\draw [-latex] (x01.east)--(x02.west);
+\draw [-latex] (x11.east)--(x12.west);
+\draw [-latex] (x21.east)--(x22.west);
+\draw [-latex] (x31.east)--(x32.west);
+\draw [-latex] (x41.east)--(x42.west);
+\draw [-latex] (x51.east)--(x52.west);
+\draw [-latex] (x61.east)--(x62.west);
+\draw [-latex] (x71.east)--(x72.west);
+
+\node (X000) [draw]  at (60mm,0mm) {$X_{00}(0)$};
+\node (X001) [draw]  at (60mm,-15mm) {$X_{00}(1)$};
+\node (X010) [draw]  at (60mm,-30mm) {$X_{01}(0)$};
+\node (X011) [draw]  at (60mm,-45mm) {$X_{01}(1)$};
+\node (X100) [draw]  at (60mm,-60mm) {$X_{10}(0)$};
+\node (X101) [draw]  at (60mm,-75mm) {$X_{10}(1)$};
+\node (X110) [draw]  at (60mm,-90mm) {$X_{11}(0)$};
+\node (X111) [draw]  at (60mm,-105mm) {$X_{11}(1)$};
+
+\draw [-latex] (x02.east)--(X000.west);
+\draw [-latex] (x02.east)--(X001.west);
+\draw [-latex] (x42.east)--(X000.west);
+\draw [-latex] (x42.east)--(X001.west);
+
+\draw [-latex] (x22.east)--(X010.west);
+\draw [-latex] (x22.east)--(X011.west);
+\draw [-latex] (x62.east)--(X010.west);
+\draw [-latex] (x62.east)--(X011.west);
+
+\draw [-latex] (x12.east)--(X100.west);
+\draw [-latex] (x12.east)--(X101.west);
+\draw [-latex] (x52.east)--(X100.west);
+\draw [-latex] (x52.east)--(X101.west);
+
+\draw [-latex] (x32.east)--(X110.west);
+\draw [-latex] (x32.east)--(X111.west);
+\draw [-latex] (x72.east)--(X110.west);
+\draw [-latex] (x72.east)--(X111.west);
+
+\node (X00) [draw]  at (95mm,0mm) {$X_{0}(0)$};
+\node (X01) [draw]  at (95mm,-15mm) {$X_{0}(1)$};
+\node (X02) [draw]  at (95mm,-30mm) {$X_{0}(2)$};
+\node (X03) [draw]  at (95mm,-45mm) {$X_{0}(3)$};
+\node (X10) [draw]  at (95mm,-60mm) {$X_{1}(0)$};
+\node (X11) [draw]  at (95mm,-75mm) {$X_{1}(1)$};
+\node (X12) [draw]  at (95mm,-90mm) {$X_{1}(2)$};
+\node (X13) [draw]  at (95mm,-105mm) {$X_{1}(3)$};
+
+\draw [-latex] (X000.east)--(X00.west);
+\draw [-latex] (X000.east)--(X02.west);
+\draw [-latex] (X001.east)--(X01.west);
+\draw [-latex] (X001.east)--(X03.west);
+\draw [-latex] (X010.east)--(X00.west);
+\draw [-latex] (X010.east)--(X02.west);
+\draw [-latex] (X011.east)--(X01.west);
+\draw [-latex] (X011.east)--(X03.west);
+
+\draw [-latex] (X100.east)--(X10.west);
+\draw [-latex] (X100.east)--(X12.west);
+\draw [-latex] (X101.east)--(X11.west);
+\draw [-latex] (X101.east)--(X13.west);
+\draw [-latex] (X110.east)--(X10.west);
+\draw [-latex] (X110.east)--(X12.west);
+\draw [-latex] (X111.east)--(X11.west);
+\draw [-latex] (X111.east)--(X13.west);
+
+\node (fX0) [draw] at (130mm,0mm) [anchor=west] {$X(0)$};
+\node (fX1) [draw]  at (130mm,-15mm) [anchor=west] {$X(1)$};
+\node (fX2) [draw]  at (130mm,-30mm) [anchor=west] {$X(2)$};
+\node (fX3) [draw]  at (130mm,-45mm) [anchor=west] {$X(3)$};
+\node (fX4) [draw]  at (130mm,-60mm) [anchor=west] {$X(4)$};
+\node (fX5) [draw]  at (130mm,-75mm) [anchor=west] {$X(5)$};
+\node (fX6) [draw]  at (130mm,-90mm) [anchor=west] {$X(6)$};
+\node (fX7) [draw]  at (130mm,-105mm) [anchor=west] {$X(7)$};
+
+\draw [-latex] (X00.east)--(fX0.west);
+\draw [-latex] (X00.east)--(fX4.west);
+\draw [-latex] (X01.east)--(fX1.west);
+\draw [-latex] (X01.east)--(fX5.west);
+\draw [-latex] (X02.east)--(fX2.west);
+\draw [-latex] (X02.east)--(fX6.west);
+\draw [-latex] (X03.east)--(fX3.west);
+\draw [-latex] (X03.east)--(fX7.west);
+
+\draw [-latex] (X10.east)--(fX4.west);
+\draw [-latex] (X10.east)--(fX0.west);
+\draw [-latex] (X11.east)--(fX1.west);
+\draw [-latex] (X11.east)--(fX5.west);
+\draw [-latex] (X12.east)--(fX2.west);
+\draw [-latex] (X12.east)--(fX6.west);
+\draw [-latex] (X13.east)--(fX3.west);
+\draw [-latex] (X13.east)--(fX7.west);
+\end{tikzpicture}
+\end{center}
+\caption{Алгоритм ДПФ с прореживанием по времени. Пример для
+последовательности из $N=8$ элементов.}\label{FFT1}
+\end{figure}
+
+После перестановок получаем четыре 2-х точечных ДПФ:
+\begin{eqnarray}
+ X_{00}(0)&=&x(0)+W_2^0x(4)\\
+ X_{00}(1)&=&x(0)-W_2^0x(4)\\
+ X_{01}(0)&=&x(2)+W_2^0x(6)\\
+ X_{01}(1)&=&x(2)-W_2^0x(6)\\
+ X_{10}(0)&=&x(1)+W_2^0x(5)\\
+ X_{10}(1)&=&x(1)-W_2^0x(5)\\
+ X_{11}(0)&=&x(3)+W_2^0x(7)\\
+ X_{11}(1)&=&x(3)+W_2^0x(7)
+\end{eqnarray}
+
+На основе четырёх двухточечных ДПФ формируется два четырёхточечные ДПФ:
+\begin{eqnarray}
+ X_0(0)&=&X_{00}(0)+W^0_4X_{01}(0)\\
+ X_0(1)&=&X_{00}(1)+W^1_4X_{01}(1)\\
+ X_0(2)&=&X_{00}(0)-W^0_4X_{01}(0)\\
+ X_0(3)&=&X_{00}(1)-W^1_4X_{01}(1)\\
+ X_1(0)&=&X_{10}(0)+W^0_4X_{11}(0)\\
+ X_1(1)&=&X_{10}(1)+W^1_4S_{11}(1)\\
+ X_1(2)&=&X_{10}(0)-W^0_4S_{11}(0)\\
+ X_1(3)&=&X_{10}(1)-W^1_4S_{01}(1)
+\end{eqnarray}
+
+На последнем уровне формируется полный спектр входного сигнала:
+\begin{eqnarray}
+ X(0)&=&X_0(0)+W^0_8 X_1(0)\\
+ X(1)&=&X_0(1)+W^1_8 X_1(1)\\
+ X(2)&=&X_0(2)+W^2_8 X_1(2)\\
+ X(3)&=&X_0(3)+W^3_8 X_1(3)\\
+ X(0)&=&X_0(0)-W^0_8 X_1(0)\\
+ X(1)&=&X_0(1)-W^1_8 X_1(1)\\
+ X(2)&=&X_0(2)-W^2_8 X_1(2)\\
+ X(3)&=&X_0(3)-W^3_8 X_1(3)
+\end{eqnarray}
+
+
+
+
+
+Таким образом прореживание по времени можно считать алгоритмом разбиения
+последовательности на две половинной длительности. Первая половина
+объединённого спектра есть сумма спектра <<чётной>> последовательности и спектра
+<<нечётной>> последовательности, умноженного на поворотные коэффициенты. Таким
+образом сокращается число операций умножения комплексных чисел и экономится
+машинное время.
+
 \section{Реализация ДПФ}
 
 В качестве алгоритма вычисления ДПФ обычно применяется быстрое преобразование
