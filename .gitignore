@@ -1,0 +1,12 @@
+*.lot
+*.lof
+*.aux
+*.log
+*.png
+*.tex~
+octave-core
+*.backup
+*.out
+*~
+*.svg
+
