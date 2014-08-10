@@ -1,5 +1,6 @@
 #!/usr/bin/octave -qf
-pkg load signal
+#pkg load signal
+graphics_toolkit gnuplot
 Ns=1000; # число отсчётов сигнала
 F1=100; # частота первого тона 100 Гц
 F2=200; # частота второго тона 200 гц
