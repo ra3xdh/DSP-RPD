@@ -255,12 +255,80 @@ openSUSE (рис.\ref{guest}). Виртуальной машине будет нужно соединение с
 \begin{center}
 \includegraphics[width=0.8\textwidth]{usbflash-select.png}
 \end{center}
-\caption{Выбор USB-устройства}
+\caption{Выбор USB-устройства}\label{usbsel}
+\end{figure}
+
+Потом в системном трее виртуальной машины появляется всплывающее уведомление, о
+том, что подключен съёмный диск (рис.\ref{usbmount}):
+
+\newpage
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.75\textwidth]{usbflash-mount.png}
+\end{center}
+\caption{Подключение съёмного диска}\label{usbmount}
+\end{figure}
+
+В ОС Linux нет разделения на диски как в ОС DOS и Windows. Все диски собираются
+в единую древовидную файловую систему. Съёмные диски отображаются (монтируются)
+в подкаталоги каталога (\verb|/var/run/media/<имя_пользователя>|). Например для
+пользователя \verb|rpduser| флэшки следует искать в каталоге
+\verb|/var/run/media/rpduser|.
+Используя это уведомление, можно сразу открыть съёмный диск в диспетчере
+файлов (рис.\ref{usbdolfin}):
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.75\textwidth]{usbflash-dolfin.png}
+\end{center}
+\caption{Флеш-диск в диспетчере файлов Dolfin}\label{usbdolfin}
 \end{figure}
 
 
 \subsection{Автоматическое получение методических указаний при помощи системы
 контроля версий Git}
+
+Методические указания по семинарам по курсу ОЦОС и лабораторным работам по
+курсу РТУиС размещены в репозиториях сервера github.com и к ним подключена
+система контроля версий Git. Для работы с репозиториями на Github.com  служит
+команда \verb|git|. Чтобы закачать их в текущий каталог, можно в консоли
+выполнить команду:
+
+\begin{verbatim}
+git clone https://github.com/ra3xdh/DSP-RPD
+\end{verbatim}
+
+При этом в текущем каталоге создаётся каталог DSP-RPD, в котором помещаются
+скачанный методические указания. В этот каталог модно попасть потом из консоли
+или из файлового менеджера. Чтобы выполнить обновление методических указаний,
+нужно находясь в каталоге \verb|DSP-RPD| выполнить команду:
+
+\begin{verbatim}
+git pull
+\end{verbatim}
+
+При этом автоматически проверяется наличие обновлений на сервере github.com и
+выкачивается последняя версия.
+
+Чтобы получить лабораторные работы по курсу РТУиС нужно выполнить команду:
+
+\begin{verbatim}
+ git clone https://github.com/ra3xdh/RTUiS-labs
+\end{verbatim}
+
+
+Теперь методички можно просматривать, например из файлового менеджера Krusader
+(рис. \ref{krus}). 
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.75\textwidth]{krusader.png}
+\end{center}
+\caption{Файловый менеджер Krusader}\label{krus}
+\end{figure}
+
+
 
 \subsection{Работа с Octave и Gnuplot}
 
