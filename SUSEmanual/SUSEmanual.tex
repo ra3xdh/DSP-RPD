@@ -285,6 +285,9 @@ openSUSE (рис.\ref{guest}). Виртуальной машине будет нужно соединение с
 \caption{Флеш-диск в диспетчере файлов Dolfin}\label{usbdolfin}
 \end{figure}
 
+Чтобы сделать скриншот, служит клавиша \verb|PrintScreen|. При этом открывается
+окно программы KSnapshot, которая позволяет управлять скриншотами, сохранять их
+в требуемом месте.
 
 \subsection{Автоматическое получение методических указаний при помощи системы
 контроля версий Git}
@@ -331,6 +334,42 @@ git pull
 
 
 \subsection{Работа с Octave и Gnuplot}
+
+Чтобы запустить Octave, нужно набрать в терминале \verb|octave|. Программа
+загружается в интерактивном режиме и выдаёт в консоль приглашение. Чтобы
+запустить скрипт Octave, нужно набрать в консоли:
+
+\begin{verbatim}
+ octave -qf имя_файла_со_скриптом
+\end{verbatim}
+
+Также можно запустить Octave с графическим интерфейсом. Для этого служит команда
+
+\begin{verbatim}
+ octave --force-gui
+\end{verbatim}
+
+Редактировать скрипты Octave можно, например, при помощи текстового
+редактора Kwrite или Kate.\ref{oct}.
+
+\begin{figure}
+\begin{center}
+ \includegraphics[width=0.8\textwidth]{kwrite-octave.png}
+\end{center}
+\caption{Octave в OpenSUSE 13.1 на VirtualBox.}\label{oct}
+\end{figure}
+
+Чтобы запустить Gnuplot служит команда \verb|gnuplot|. Мы попадаем в
+интерактивный режим Gnuplot. Сохранять построенные графики в графические файлы
+можно в графическом окне (рис.\ref{gnuplot}).
+
+\begin{figure}
+\begin{center}
+ \includegraphics[width=0.8\textwidth]{gnuplot.png}
+\end{center}
+\caption{Gnuplot в OpenSUSE 13.1 на VirtualBox.}\label{gnuplot}
+\end{figure}
+
 
  
 \end{document}
