@@ -1,0 +1,273 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[koi8-r]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{hyperref}
+\usepackage{mathtext}
+\usepackage[T2A]{fontenc}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage[justification=centering,labelsep=period]{caption}
+\usepackage{indentfirst}
+\usepackage[pdftex]{graphicx,color}
+\usepackage{textcomp}
+\usepackage{gnuplot-lua-tikz}
+\usepackage{tikz}
+\usepackage{amssymb}
+\usepackage{amsmath}
+% \usepackage{fontogr}
+% \usepackage{pscyr}
+\usepackage[top=20mm,bottom=20mm,left=20mm,right=20mm]{geometry}
+
+
+
+% \renewcommand{\captionlabeldelim} {.}
+
+\makeatletter
+\renewcommand\@biblabel[1]{#1.}
+\makeatother
+
+\unitlength=1mm
+
+\usepackage{listings} %% собственно, это и есть пакет listings
+% \usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}} %% это сделает текст заголовка белым
+%% код ниже нарисует серую рамочку вокруг заголовка кода.
+\DeclareCaptionFormat{listing}{\colorbox{white}{\parbox{\textwidth}{#1#2#3}}}
+% \captionsetup[lstlisting]{format=listing,labelfont=black,textfont=black}
+\renewcommand{\lstlistingname}{Листинг}
+
+
+\begin{document}
+
+
+\usetikzlibrary{arrows}
+
+\lstset{ %
+ language=Bash,                 % выбор языка для подсветки (здесь это С)
+ basicstyle=\small\ttfamily, % размер и начертание шрифта для подсветки кода
+ numbers=left,               % где поставить нумерацию строк (слева\справа)
+ numberstyle=\tiny,           % размер шрифта для номеров строк
+ stepnumber=1,                   % размер шага между двумя номерами строк
+ numbersep=5pt,                % как далеко отстоят номера строк от
+ % подсвечиваемого кода
+ backgroundcolor=\color{white}, % цвет фона подсветки - используем
+ showspaces=false,            % показывать или нет пробелы специальными
+% отступами
+ showstringspaces=false,      % показывать или нет пробелы в строках
+ showtabs=false,             % показывать или нет табуляцию в строках
+ frame=single,              % рисовать рамку вокруг кода
+ tabsize=2,                 % размер табуляции по умолчанию равен 2 пробелам
+ captionpos=t,              % позиция заголовка вверху [t] или внизу [b] 
+ breaklines=true,           % автоматически переносить строки (да\нет)
+% wordwrap=true,
+ breakatwhitespace=false, % переносить строки только если есть пробел
+ escapeinside={\%*}{*)}   % если нужно добавить комментарии в коде
+ }
+
+
+
+\author{Кузнецов В.В., ассистент кафедры ЭИУ1-КФ}
+\title{Семинар \No 5 по курсу <<Основы цифровой обработки сигналов>> \\
+Синтез цифрового фильтра}
+\maketitle
+ 
+\section{Цель работы} 
+ 
+Целью семинара является синтез цифровых фильтров Чебышева, Баттерворта и Кауэра
+с бесконечной импульсной характеристикой (БИХ) в среде численных расчётов
+GNU/Octave. 
+
+\section{Теоретические сведение о БИХ (рекурсивных) цифровых фильтрах}
+
+Рекурсивный фильтр для формирования $i$-го выходного отсчёта использует не
+только предыдущие значения входного сигнала, но и предыдущие значения выходного
+сигнала:
+
+\begin{equation}
+ y(i)=a_0x(i)+a_1x(i-1)+a_2x(i-2)+\ldots+a_mx(i-m)+b_1y(i-1)+b_2y(i-2)+\ldots+
+b_n y(i-n) \label{Y-rekursiv}
+\end{equation}
+
+Причём коэффициенты $(b_1,b_2,\ldots,b_n)$ определяющие рекурсивную часть
+алгоритма фильтрации не равны нулю одновременно.
+
+Применив Z-преобразование к выражению (\ref{Y-rekursiv}) получим системную
+функцию рекурсивного ЦФ:
+
+\begin{equation}
+ H(z)=\frac{Y(z)}{X(z)}=\frac{a_0+a_1z^{-1}+\ldots+a_mz^{-m}}{1-b_1^{-1}-\ldots-
+b_nz^{-n}}=\frac{a_0z^n+a_1z^{n-1}+\ldots+a_mz^{n-m}}{z^n-b_1^{n-1}-\ldots-b_n}
+\label{Hz-rekursiv}
+\end{equation}
+
+
+Структурная схема рекурсивного ЦФ показана на рис.\ref{Rekursiv-sch}.
+
+\begin{figure}[!ht]
+\begin{center}
+\begin{tikzpicture}
+\draw (-10mm,0) node [anchor=south] {$x_k$}-- (0,0);
+
+\node (s) at (40mm,-30mm)  [circle,draw, inner sep=2mm] {$\Sigma$};
+
+\foreach \x / \a in {0mm/$a_0$,20mm/$a_1$,40mm/$a_2$,60mm/$a_3$}
+{
+\fill (\x,0) circle (0.7mm);
+\draw [-latex] (\x,0)--(\x+5mm,0);
+\draw (\x+5mm, -5mm)rectangle (\x+15mm,5mm);
+\draw (\x+5mm,0) node [anchor=west] {$z^{-1}$};
+\draw [-latex] (\x,0) -- (\x,-10mm);
+\draw (\x-5mm,-10mm) node [anchor=north east] {\a} -- (\x+5mm,-10mm) --
+(\x,-20mm) -- (\x-5mm,-10mm);
+\draw  (\x+15mm,0)--(\x+20mm,0);
+\draw [-latex] (\x,-20mm) -- (s);
+}
+\draw [-latex] (80mm,0) -- (80mm,-10mm);
+\draw (75mm,-10mm) node [anchor=north east] {$a_m$} -- (85mm,-10mm) --
+(80mm,-20mm) -- (75mm,-10mm);
+\draw [-latex] (80mm,-20mm) -- (s);
+\draw [-latex] (s)--(100mm,-30mm) node [anchor=west] {$y_k$};
+
+
+\foreach \x / \a in {0mm/$b_n$,20mm/$b_3$,40mm/$b_2$,60mm/$b_1$}
+{
+\draw  (\x,-60mm)--(\x+5mm,-60mm);
+\draw (\x+5mm, -65mm)rectangle (\x+15mm,-55mm);
+\draw (\x+5mm,-60mm) node [anchor=west] {$z^{-1}$};
+\draw [-latex] (\x,-60mm) -- (\x,-50mm);
+\draw (\x-5mm,-50mm) node [anchor=south east] {\a} -- (\x+5mm,-50mm) --
+(\x,-40mm) -- (\x-5mm,-50mm);
+\draw [latex-] (\x+15mm,-60mm)--(\x+20mm,-60mm);
+\draw [-latex] (\x,-40mm) -- (s);
+}
+
+\foreach \x in {20mm,40mm,60mm} 
+{
+\fill (\x,-60mm) circle (0.7mm);
+}
+
+\draw (80mm,-30mm)--(80mm,-60mm);
+\fill (80mm,-30mm) circle (0.7mm);
+\end{tikzpicture} 
+\end{center}
+\caption{Схема построения рекурсивного ЦФ}\label{Rekursiv-sch}
+\end{figure}
+
+Верхняя часть схемы отвечает трансверсальной (нерекурсивной) части алгоритма
+фильтрации. Для её реализации требуется в общем случае $m+1$ масштабных блоков
+(операций умножения) и $m$ ячеек памяти, в которых хранятся входные отсчёты.
+
+Рекурсивной части алгоритма соответствует нижняя часть схемы. Здесь
+используется $n$ последовательных значений сигнала, которые перемещаются из
+ячейки в ячейку путём сдвига.
+
+Рекурсивные фильтры имеют бесконечную импульсную характеристику, так как в
+данном алгоритме имеются обратные связи. Приведём без вывода выражение для
+импульсной характеристики такого ЦФ 1-го порядка. Передаточная функция для него
+равна:
+
+\begin{equation}
+ H(z)=\frac{a}{1-bz^{-1}}=\frac{az}{z-b}
+\end{equation}
+
+Импульсная характеристика вычисляется методом вычетов и представляет собой
+убывающую геометрическую прогрессию:
+
+\begin{equation}
+ h(k)=Z^{-1}[H(z)]=(a,ab,ab^2,\ldots)
+\end{equation}
+
+Так как рекурсивный ЦФ имеет бесконечную импульсную характеристику, то он может
+быть неустойчивым. Практически могут применяться только устойчивые ЦФ. Критерий
+устойчивости рекурсивного ЦФ состоит в том, что фильтр является устойчивым,
+если полюсы его системной функции $H(z)$ располагаются на комплексной плоскости
+внутри окружности с радиусом равным единице и с центром $z=0$. Это утверждение
+приведём без вывода.
+
+\section{Пример синтеза рекурсивного ЦФ}
+
+Для синтеза рекурсивного ЦФ необходимо использовать аналоговый фильтр-прототип.
+В качестве прототипа служит фильтр Баттерворта, Чебышева или Кауэра
+(эллиптический). В системе GNU/Octave реализованы следующие функции синтеза
+фильтров:
+
+\begin{itemize}
+ \item \verb|butter(n,w)| синтезирует фильтра Баттерворта порядка \verb|n| с
+относительной частотой среза \verb|w|.
+ \item \verb|cheby1(n,Rp,w)| синтезирует фильтр Чебышева порядка \verb|n| с
+частотой среза \verb|w| и амплитудой пульсаций \verb|Rp| (дБ) в полосе
+пропускания.
+ \item \verb|ellip(n,Rp,Rs,w)| синтезирует фильтр Кауэра порядка \verb|n| с
+частотой среза \verb|w|, амплитудой пульсаций \verb|Rp| (дБ) в полосе
+пропускания и допустимым затуханием \verb|Rs| (дБ) в полосе задерживания.
+\end{itemize}
+
+Рассмотрим пример использования данных функций. Синтезируем ЦФ Баттерворта,
+Чебышева и Кауэра. Для этого служит приведённый ниже листинг. Выполнив его в
+Octave, Matlab или Scilab получим три АЧХ фильтров (\ref{butter}, \ref{cheb},
+\ref{cauer}) и вектора \verb|ab,bb|, \verb|ac,bc|, \verb|ae,be|, которые
+содержат коэффициенты рекурсивной и нерекурсивной частей фильтра.
+
+\begin{verbatim}
+#!/usr/bin/octave -qf
+pkg load signal;
+f=600; # частота среза
+fs=8000; # частота дискретизации
+order=8; # порядок фильтра
+Rp=3; # допустимая амплитуда пульсаций в полосе пропускания
+Rs=30; # допустимое затухание вне полосы пропускания
+[bb,ab]=butter(order,f/fs); # синтезируем фильтр Баттерворта
+[bc,ac]=cheby1(order,Rp,f/fs); # синтезируем фильтр Чебышева
+[be,ae]=ellip(order,Rp,Rs,f/fs); # cинтезируем фильтр Кауэра(Эллиптический)
+freqz(bb,ab); # посмотрим АЧХ фильтров
+pause;
+freqz(bc,ac); # 
+pause;
+freqz(be,ae);
+pause;
+\end{verbatim}
+
+
+\begin{figure}[!ht]
+\centering
+\input{butter-mr.tex}
+\caption{АЧХ цифрового фильтра Баттерворта}\label{butter}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\input{cheb-mr.tex}
+\caption{АЧХ цифрового фильтра Чебышева}\label{cheb}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\input{ellip-mr.tex}
+\caption{АЧХ цифрового фильтра Кауэра}\label{cauer}
+\end{figure}
+
+\section{Задание для самостоятельной работы}
+
+Используя листинг, приведённый в семинаре синтезировать ЦФ Баттерворта,
+Чебышева и Кауэра 10 порядка с частотой среза согласно варианту. Частота среза
+вычисляется по формулам:
+
+Для группы РПД-91:
+\begin{equation}
+ f_2=30N + 60,\qquad Гц
+\end{equation}
+
+Для группы РПД\_С-91:
+\begin{equation}
+ f_2=32N + 100,\qquad Гц
+\end{equation}
+
+Используя материал семинара \No4, подобрать частоту двухтонального сигнала для
+демонстрации работы одного из синтезированных фильтров при помощи функции
+\verb|filter()|. В отчёт включить три АЧХ фильтров и осциллограммы
+демонстрационного сигнала до и после наложения фильтра. 
+
+
+
+\end{document}
