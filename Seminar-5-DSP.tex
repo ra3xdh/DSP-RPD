@@ -42,6 +42,7 @@
 
 
 \usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
 
 \lstset{ %
  language=Bash,                 % выбор языка для подсветки (здесь это С)
@@ -184,6 +185,104 @@ b_nz^{-n}}=\frac{a_0z^n+a_1z^{n-1}+\ldots+a_mz^{n-m}}{z^n-b_1^{n-1}-\ldots-b_n}
 если полюсы его системной функции $H(z)$ располагаются на комплексной плоскости
 внутри окружности с радиусом равным единице и с центром $z=0$. Это утверждение
 приведём без вывода.
+
+\subsection{Параметры фильтров Баттерворта, Чебышева и Кауэра}
+
+Идеальный фильтр имеет АЧХ прямоугольной формы. Физически реализуемые фильтры 
+имеют АЧХ, формы описываемой различными аппроксимациями. Рассмотрим наиболее
+употребительные из них.
+Фильтр Баттерворта имеет наиболее равномерную АЧХ в полосе пропускания и
+равномерно спадающую АЧХ в полосе задерживания. 
+
+\begin{figure}[!ht]
+  \centering
+  \begin{tikzpicture}
+   \draw[-latex] (0,0) -- (7,0) node [anchor=west] {$\omega$};
+   \draw[-latex] (0,0) -- (0,5) node [anchor=south]
+    {$|H(j\omega)|$};
+%     \draw [very thick, y=4cm, x=3cm,
+%     declare function={K(\w)=1/((1+\w^8.0)^0.5);}] plot [domain=0:2]
+% (\x,{K(\x)});
+    \draw[domain=0:2,y=4cm, x=3cm,smooth,name path=MR] plot
+          function{1/(1+x**8)**0.5};
+    \path [name path=Fc] (0,3.5) -- (5,3.5);
+    \path [name path=Fs] (0,1) -- (5,1);
+    \draw [dashed,name intersections={of=MR and Fc}] (0,3.5) node [anchor=east]
+    {$\alpha_p$} -- (intersection-1);
+    \draw [dashed,name intersections={of=MR and Fc}] (intersection-1) |- (0,0);
+    \draw [dashed,name intersections={of=MR and Fs}] (0,1) node [anchor=east]
+    {$\alpha_s$} -- (intersection-1);
+    \draw [dashed,name intersections={of=MR and Fs}] (intersection-1) |- (0,0);
+    \node [anchor=north] at (2.6,0) {$\omega_c$};
+    \node [anchor=north] at (4.2,0) {$\omega_s$};
+  \end{tikzpicture}
+  \caption{Типичная АЧХ фильтра Баттерворта 4-го порядка}
+  \label{fig:butterw}
+\end{figure}
+
+Фильтр Чебышева имеет более резкий спад АЧХ в полосе задерживания, но зато
+имеет пульсации АЧХ в полосе затухания. Он характеризуется допустимой
+амплитудой пульсаций $R_p$.
+
+\begin{figure}[!ht]
+  \centering
+  \begin{tikzpicture}
+   \draw[-latex] (0,0) -- (7,0) node [anchor=west] {$\omega$};
+   \draw[-latex] (0,0) -- (0,5) node [anchor=south]
+    {$|H(j\omega)|$};
+%     \draw [very thick, y=4cm, x=3cm,
+%     declare function={K(\w)=1/((1+\w^8.0)^0.5);}] plot [domain=0:2]
+% (\x,{K(\x)});
+    \draw[domain=0:2,y=4cm, x=3cm,samples=200,name path=MR] plot
+          function{1/(sqrt(1+0.5**2*((cos(4*acos(x)))**2)))};
+    \path [name path=Fc] (0,3.5) -- (5,3.5);
+    \path [name path=Fs] (0,1) -- (5,1);
+    \draw [dashed,name intersections={of=MR and Fc}] (0,3.5) node [anchor=east]
+    {$\alpha_p$} -- (intersection-1);
+    \draw [dashed,name intersections={of=MR and Fc}] (intersection-1) |- (0,0);
+    \draw [dashed,name intersections={of=MR and Fs}] (0,1) node [anchor=east]
+    {$\alpha_s$} -- (intersection-1);
+    \draw [dashed,name intersections={of=MR and Fs}] (intersection-1) |- (0,0);
+    \node [anchor=north] at (3.1,0) {$\omega_p$};
+    \node [anchor=north] at (3.8,0) {$\omega_s$};
+  \end{tikzpicture}
+  \caption{Типичная АЧХ фильтра Чебышева 4-го порядка}
+  \label{fig:cheb}
+\end{figure}
+
+Фильтр Кауэра (Эллиптический фильтр) имеет наиболее резкий спад АЧХ, но
+пульсации присутствуют и в полосе пропускания, и в полосе задерживания. Фильтр
+характеризуется допустимыми амплитудами пульсаций в полосе пропускания $R_p$ и
+минимально допустимым затуханием в полосе задерживания $R_s$.
+
+\begin{figure}[!ht]
+  \centering
+  \begin{tikzpicture}
+   \draw[-latex] (0,0) -- (7,0) node [anchor=west] {$\omega$};
+   \draw[-latex] (0,0) -- (0,5) node [anchor=south]
+    {$|H(j\omega)|$};
+%     \draw [very thick, y=4cm, x=3cm,
+%     declare function={K(\w)=1/((1+\w^8.0)^0.5);}] plot [domain=0:2]
+% (\x,{K(\x)});
+    \draw[domain=0:2,y=4cm, x=3cm,samples=200,name path=MR] plot
+function{
+1/((0.25*((1.846*(1.305*x**2-1)**2)/(1-0.695*x**2)**2-1)**2)/(1-(.153*(1.305*x**
+2-1)**2)/(1-0.695*x**2)**2)**2+1)**0.5};
+    \path [name path=Fc] (0,3.5) -- (5,3.5);
+    \path [name path=Fs] (0,1) -- (5,1);
+    \draw [dashed,name intersections={of=MR and Fc}] (0,3.5) node [anchor=east]
+    {$\alpha_p$} -- (intersection-1);
+    \draw [dashed,name intersections={of=MR and Fc}] (intersection-1) |- (0,0);
+    \draw [dashed,name intersections={of=MR and Fs}] (0,1) node [anchor=east]
+    {$\alpha_s$} -- (intersection-1);
+    \draw [dashed,name intersections={of=MR and Fs}] (intersection-1) |- (0,0);
+    \node [anchor=north] at (3.0,0) {$\omega_p$};
+    \node [anchor=north] at (3.5,0) {$\omega_s$};
+  \end{tikzpicture}
+  \caption{Типичная АЧХ фильтра Кауэра 4-го порядка}
+  \label{fig:cauer}
+\end{figure}
+
 
 \section{Пример синтеза рекурсивного ЦФ}
 
