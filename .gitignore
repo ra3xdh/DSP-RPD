@@ -9,4 +9,6 @@ octave-core
 *.out
 *~
 *.svg
+*.gnuplot
+*.table
 
